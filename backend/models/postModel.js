@@ -14,7 +14,16 @@ const postSchema = mongoose.Schema({
         ref: "User",
         required: [true, "Post must have an author."]
     }
-}, { timestamps: true });
+}, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
+
+// Parent referencing: Parent (Post) doesn't know about Children (Comments)
+// Virtual populate parent (Post) with children (Comments)
+// Virtual field "comments" is not stored into Post document, it is populated on Post query
+postSchema.virtual('comments', {
+    ref: "Comment",
+    foreignField: "post",
+    localField: "_id"
+});
 
 const Post = mongoose.model("Post", postSchema);
 
