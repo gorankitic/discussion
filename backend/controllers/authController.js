@@ -20,7 +20,8 @@ const createSendToken = (user, statusCode, res) => {
     res.status(statusCode).json({
         _id: user._id,
         name: user.name,
-        email: user.email
+        email: user.email,
+        photoUrl: user.photoUrl
     });
 }
 
@@ -28,9 +29,9 @@ const createSendToken = (user, statusCode, res) => {
 // POST method
 // Public route /api/users/signup
 exports.signup = catchAsync(async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, password, photoUrl } = req.body;
     // Create a new user - password is hashed in pre-save mongoose hook in User model
-    const user = await User.create({ name, email, password });
+    const user = await User.create({ name, email, password, photoUrl });
     // Create JWT and send it in cookie and send response
     createSendToken(user, 201, res);
 });

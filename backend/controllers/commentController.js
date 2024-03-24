@@ -1,5 +1,6 @@
 
 const Comment = require("../models/commentModel");
+const AppError = require("../utils/AppError");
 
 const catchAsync = require("../utils/catchAsync");
 
@@ -8,7 +9,14 @@ const catchAsync = require("../utils/catchAsync");
 // Protected route /api/posts/:postId/comments
 exports.createComment = catchAsync(async (req, res) => {
 
-    const comment = await Comment.create({ content: req.body.content, user: req.user._id, post: req.params.postId });
+    const comment = await Comment.create({
+        content: req.body.content,
+        user: req.user._id,
+        post: req.params.postId,
+        parent: req.body.parentId
+    });
+
+    await comment.populate("user");
 
     res.status(201).json({
         _id: comment._id,
@@ -16,20 +24,58 @@ exports.createComment = catchAsync(async (req, res) => {
         user: comment.user,
         post: comment.post,
         createdAt: comment.createdAt,
-        updatedAt: comment.updatedAt
+        updatedAt: comment.updatedAt,
+        parent: comment.parent
     });
 });
 
-// Get all post comments
-// GET method
-// Public route /api/posts/:postId/comments
-exports.getComments = catchAsync(async (req, res) => {
+// Update comment document
+// PATCH method
+// Protected route /api/posts/:postId/comments/:commentId
+exports.updateComment = catchAsync(async (req, res, next) => {
+    const { content } = req.body;
 
-    const comments = await Comment.find({ post: { $eq: req.params.postId } }).sort({ createdAt: -1 });
+    const comment = await Comment.findById(req.params.commentId);
+    if (!comment) {
+        return next(new AppError("There is no comment with that ID.", 404));
+    }
 
-    res.status(200).json({
-        status: "success",
-        results: comments.length,
-        comments
-    });
+    if (req.user._id.toString() !== comment.user._id.toString()) {
+        return next(new AppError("You are not authorized to update this comment.", 403));
+    }
+
+    const updatedComment = await Comment.findByIdAndUpdate(req.params.commentId, { content }, { new: true, runValidators: true });
+
+    res.status(200).json(updatedComment);
+});
+
+// Delete comment document
+// DELETE method
+// Protected route /api/posts/:postId/comments/:commentId
+exports.deleteComment = catchAsync(async (req, res, next) => {
+    const comment = await Comment.findById(req.params.commentId);
+    if (!comment) {
+        return next(new AppError("There is no comment with that ID.", 404));
+    }
+
+    if (req.user._id.toString() !== comment.user._id.toString()) {
+        return next(new AppError("You are not authorized to delete this comment.", 403));
+    }
+
+    // Function to recursively delete nested comments
+    const deleteNestedComments = async (commentId) => {
+        const nestedComments = await Comment.find({ parent: commentId });
+        for (const nestedComment of nestedComments) {
+            await deleteNestedComments(nestedComment._id); // Recursively delete nested comments
+            await Comment.deleteOne({ _id: nestedComment._id }); // Delete the nested comment itself
+        }
+    }
+
+    // Call the recursive function to delete nested comments under the root comment
+    await deleteNestedComments(comment._id);
+
+    // Delete the root comment
+    await Comment.findByIdAndDelete(comment._id);
+
+    res.status(204).json({ status: "success" });
 });

@@ -4,7 +4,7 @@ const catchAsync = require("../utils/catchAsync");
 
 // Create post document
 // POST method
-// Protected router /api/posts
+// Protected route /api/posts
 exports.createPost = catchAsync(async (req, res) => {
     const { title, content } = req.body;
 
@@ -37,7 +37,9 @@ exports.getAllPosts = catchAsync(async (req, res) => {
 // Public route /api/posts/:postId
 exports.getPost = catchAsync(async (req, res, next) => {
 
-    const post = await Post.findById(req.params.postId).populate({ path: "comments", select: "-__v" })
+    // match: { parent: { $eq: null } }
+    const post = await Post.findById(req.params.postId)
+        .populate({ path: "comments", options: { sort: { 'createdAt': -1 } } });
 
     if (!post) {
         return next(new AppError("There is no post with that ID.", 404));

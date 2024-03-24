@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    height: 100vh;
+    margin: 0 auto;
+    max-width: 800px;
+    @apply px-4;
+}
+
+input {
+    @apply border-2 border-neutral-700 rounded-md py-1 px-2 outline-none;
+}
+
+.btn {
+    @apply bg-red-500 text-white py-2 px-3 rounded-md hover:bg-red-400 transition-all;
+}
+
+.link {
+    @apply border border-red-600 rounded-md py-1 px-2 w-28 text-center text-red-600 hover:text-red-500;
+}
+
+.icon {
+    @apply h-4 w-4 text-neutral-700 cursor-pointer;
+}
+
+.hide {
+    @apply hidden;
+}
+
+.collapse-line {
+    @apply w-5 relative mb-4 cursor-pointer -translate-x-1/2;
+}
+
+.collapse-line:hover::before,
+.collapse-line:focus-visible::before {
+    @apply bg-red-500;
+}
+
+.collapse-line::before {
+    @apply content-[""] absolute top-0 bottom-0 left-1/2 w-[2px] bg-red-300 transition-colors
+}

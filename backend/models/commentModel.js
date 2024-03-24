@@ -12,14 +12,18 @@ const commentSchema = mongoose.Schema({
     },
     post: {
         type: mongoose.Schema.ObjectId,
-        red: "Post",
+        ref: "Post",
         required: [true, "Comment must belong to post."]
+    },
+    parent: {
+        type: mongoose.Schema.ObjectId,
+        ref: "Comment"
     }
-}, { timestamps: true });
+}, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
 
 // Pre-query mongoose hook to populate comment document with user document
 commentSchema.pre(/^find/, function (next) {
-    this.populate({ path: 'user', select: "name" });
+    this.populate({ path: 'user', select: "name photoUrl" });
     next();
 });
 

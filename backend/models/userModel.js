@@ -20,6 +20,9 @@ const userSchema = mongoose.Schema({
         required: [true, 'You must provide password.'],
         validate: [validator.isStrongPassword, 'Password is not strong enough.'],
         select: false
+    },
+    photoUrl: {
+        type: String
     }
 }, { timestamps: true });
 
