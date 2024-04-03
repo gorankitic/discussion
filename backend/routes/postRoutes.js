@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { createPost, getAllPosts, getPost } = require('../controllers/postController');
+const { createPost, getAllPosts, getPost, updatePost, deletePost } = require('../controllers/postController');
 const { protect } = require('../middlewares/authMiddleware');
 const commentRouter = require("../routes/commentRoutes");
 
@@ -16,5 +16,7 @@ router
 router
     .route("/:postId")
     .get(getPost)
+    .patch(protect, updatePost)
+    .delete(protect, deletePost)
 
 module.exports = router;

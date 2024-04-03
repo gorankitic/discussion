@@ -1,31 +1,59 @@
-// react
-import { Link } from "react-router-dom";
+
 // hooks
-import { useLogout } from "../hooks/useLogout";
+import { useState } from "react";
 // components
-import Loader from "../components/Loader";
+import { Link } from "react-router-dom";
+import { AudioLines, Bell, LogIn, UserRound } from "lucide-react";
+import DropdownMenu from "./DropdownMenu";
 // context
-import { useAuthContext } from "../context/AuthContext";
-import UserAvatar from "./UserAvatar";
+import { useAuthContext } from "../hooks/useAuthContext";
+// framer-motion
+import { AnimatePresence } from "framer-motion";
 
 const Navbar = () => {
-    const { user, isLoading, error } = useAuthContext();
-    const { logout } = useLogout();
+    const [showDropdown, setShowDropdown] = useState(false);
+    const { user } = useAuthContext();
+
+    const handleBlur = () => {
+        setTimeout(() => {
+            setShowDropdown(false);
+        }, 200);
+    }
 
     return (
-        <header className="flex items-center justify-between my-10">
-            <h1 className="text-red-500 font-bold text-3xl text-center">Nested comments system</h1>
-            {!user && <Link to="/login" className="link">Sign in</Link>}
+        <nav className="flex items-center justify-between my-4">
+            <Link to="/" className="flex gap-2 items-center">
+                <AudioLines className="text-red-400 h-8 w-8" />
+                <h1 className="text-red-400 font-bold text-3xl text-center tracking-wide">Discussion</h1>
+            </Link>
+
+            {!user &&
+                <Link to="/login" className="nav-link">
+                    Sign in
+                    <LogIn className="h-4 w-4" />
+                </Link>
+            }
             {user && (
                 <div className="flex items-center gap-3 ml-auto">
-                    <UserAvatar name={user.name} photoUrl={user.photoUrl} />
-                    <button disabled={isLoading} className="btn" onClick={logout}>
-                        {isLoading ? <Loader /> : "Sign out"}
-                    </button>
+                    <Link to="/notifications">
+                        <button className="flex items-center justify-center w-10 h-10 rounded-full bg-neutral-100 relative hover:bg-neutral-200">
+                            {/* {unreadNotifications} */}
+                            <Bell className="text-red-400" />
+                        </button>
+                    </Link>
+                    <div className="relative" onClick={() => setShowDropdown(open => !open)} onBlur={handleBlur}>
+                        <button className="flex items-center justify-center w-10 h-10 rounded-full bg-neutral-100 relative hover:bg-neutral-200">
+                            {!user.photoUrl ? <UserRound className="text-red-500" /> : <img src={user.photoUrl} className="w-full h-full object-cover rounded-full" />}
+                        </button>
+                        {showDropdown && (
+                            <AnimatePresence>
+                                <DropdownMenu />
+                            </AnimatePresence>
+                        )}
+                    </div>
                 </div>
             )}
-            {error && <p className="text-red-500">{error}</p>}
-        </header>
+        </nav>
     )
 }
 

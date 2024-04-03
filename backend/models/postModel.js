@@ -16,6 +16,12 @@ const postSchema = mongoose.Schema({
     }
 }, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
 
+// Pre-query mongoose hook to populate comment document with user document
+postSchema.pre(/^find/, function (next) {
+    this.populate({ path: 'user', select: "name photoUrl" });
+    next();
+});
+
 // Parent referencing: Parent (Post) doesn't know about Children (Comments)
 // Virtual populate parent (Post) with children (Comments)
 // Virtual field "comments" is not stored into Post document, it is populated on Post query

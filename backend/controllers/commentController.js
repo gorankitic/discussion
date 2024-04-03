@@ -1,5 +1,6 @@
 
 const Comment = require("../models/commentModel");
+const Notification = require("../models/notificationModel");
 const AppError = require("../utils/AppError");
 
 const catchAsync = require("../utils/catchAsync");
@@ -17,6 +18,35 @@ exports.createComment = catchAsync(async (req, res) => {
     });
 
     await comment.populate("user");
+    await comment.populate({ path: "post", select: "user" });
+
+    // Create a notification
+    // Based on comment.parentId field 
+    // Notification can be created for root comment or nested comment(reply)
+    // Do not create notifications for your comments and replies on your own comments and posts
+    let notification;
+    if (comment.user._id.toString() !== comment.post.user._id.toString() && comment.parent === null) {
+        notification = await Notification.create({
+            type: "commented on your post.",
+            commentContent: comment.content,
+            user: comment.post.user._id,
+            creator: comment.user._id,
+            post: comment.post
+        });
+    }
+    if (comment.parent !== null) {
+        const parentComment = await Comment.findById(comment.parent);
+        if (comment.user._id.toString() !== parentComment.user._id.toString()) {
+            notification = await Notification.create({
+                type: "made a reply to your comment.",
+                commentContent: comment.content,
+                user: parentComment.user._id,
+                creator: comment.user._id,
+                comment: comment._id,
+                post: parentComment.post
+            });
+        }
+    }
 
     res.status(201).json({
         _id: comment._id,

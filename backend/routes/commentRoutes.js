@@ -2,7 +2,7 @@
 const express = require("express");
 
 const { protect } = require("../middlewares/authMiddleware");
-const { getComments, createComment, updateComment, deleteComment } = require("../controllers/commentController");
+const { createComment, updateComment, deleteComment } = require("../controllers/commentController");
 
 const router = express.Router({ mergeParams: true });
 

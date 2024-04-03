@@ -1,7 +1,7 @@
 // hooks
-import { createContext, useContext, useMemo, useReducer } from "react";
+import { createContext, useMemo, useReducer } from "react";
 
-const CommentContext = createContext();
+export const CommentContext = createContext();
 
 const initialState = {
     comments: [],
@@ -19,10 +19,10 @@ const commentReducer = (state, action) => {
             return { ...state, comments: action.payload, error: null }
         case "comment/created":
             return { ...state, comments: [action.payload, ...state.comments], error: null, disabled: false }
-        case "comment/deleted":
-            return { ...state, comments: state.comments.filter(comment => comment._id !== action.payload), error: null, disabled: false }
         case "comment/updated":
             return { ...state, comments: state.comments.map(comment => comment._id === action.payload._id ? { ...action.payload } : comment), error: null, disabled: false }
+        case "comment/deleted":
+            return { ...state, comments: state.comments.filter(comment => comment._id !== action.payload), error: null, disabled: false }
         case "rejected":
             return { ...state, error: action.payload, disabled: false }
         default:
@@ -58,12 +58,4 @@ export const CommentContextProvider = ({ children }) => {
             {children}
         </CommentContext.Provider>
     )
-}
-
-export const useCommentContext = () => {
-    const context = useContext(CommentContext);
-    if (!context) {
-        throw new Error("useCommentContext must be used inside an CommentContextProvider");
-    }
-    return context;
 }

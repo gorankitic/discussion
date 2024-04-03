@@ -1,14 +1,17 @@
 // hooks
-import { createContext, useContext, useReducer, useEffect, useCallback } from "react";
-import { useCommentContext } from "./CommentContext";
+import { createContext, useReducer, useEffect } from "react";
+// services
+import { getPosts } from "../services/postApi";
 
-const PostContext = createContext();
+export const PostContext = createContext();
 
 const initialState = {
     posts: [],
     post: null,
-    comments: [],
+    page: 1,
+    hasMorePages: false,
     isLoading: false,
+    disabled: false,
     error: null
 }
 
@@ -16,12 +19,24 @@ const postReducer = (state, action) => {
     switch (action.type) {
         case "loading":
             return { ...state, isLoading: true }
+        case "buttons/disabled":
+            return { ...state, disabled: true }
+        case "buttons/enabled":
+            return { ...state, disabled: false }
+        case "page/increment":
+            return { ...state, page: state.page + 1 }
         case "posts/loaded":
-            return { ...state, posts: action.payload, isLoading: false, error: null }
+            return { ...state, posts: [...state.posts, ...action.payload.posts], hasMorePages: action.payload.hasMorePages, isLoading: false, error: null }
         case "post/loaded":
             return { ...state, post: action.payload, isLoading: false, error: null }
+        case "post/created":
+            return { ...state, posts: [action.payload, ...state.posts], isLoading: false, error: null, disabled: false }
+        case "post/updated":
+            return { ...state, posts: state.posts.map(post => post._id === action.payload._id ? { ...action.payload } : post), post: action.payload, isLoading: false, error: null, disabled: false }
+        case "post/deleted":
+            return { ...state, posts: state.posts.filter(post => post._id !== action.payload), isLoading: false, error: null, disabled: false }
         case "rejected":
-            return { posts: null, isLoading: false, error: action.payload }
+            return { ...state, isLoading: false, error: action.payload }
         default:
             return state;
     }
@@ -29,63 +44,25 @@ const postReducer = (state, action) => {
 
 export const PostContextProvider = ({ children }) => {
     const [state, dispatch] = useReducer(postReducer, initialState);
-    const { dispatch: dispatchComments } = useCommentContext();
+    const { page } = state;
 
     useEffect(() => {
         (async () => {
             dispatch({ type: "loading" });
             try {
-                const response = await fetch('http://localhost:5000/api/posts', {
-                    credentials: 'include'
-                });
-                const json = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(json.message);
-                }
-                if (response.ok) {
-                    dispatch({ type: "posts/loaded", payload: json.posts });
-                }
+                const json = await getPosts(page);
+                dispatch({ type: "posts/loaded", payload: json });
             } catch (error) {
                 dispatch({ type: "rejected", payload: error.message });
             }
         })();
-    }, []);
+    }, [dispatch, page]);
 
-    const getPost = useCallback(async (postId) => {
-        dispatch({ type: "loading" });
-        try {
-            const response = await fetch(`http://localhost:5000/api/posts/${postId}`, {
-                credentials: 'include'
-            });
-            const json = await response.json();
 
-            if (!response.ok) {
-                throw new Error(json.message);
-            }
-            if (response.ok) {
-                dispatch({ type: "post/loaded", payload: json.post });
-                dispatchComments({ type: "comments/loaded", payload: json.post.comments });
-            }
-        } catch (error) {
-            dispatch({ type: "rejected", payload: error.message });
-        }
-    }, [dispatchComments]);
-
-    // console.log("PostContext state: ", state);
+    console.log("PostContext state: ", state);
     return (
-        <PostContext.Provider value={{ ...state, dispatch, getPost }}>
+        <PostContext.Provider value={{ ...state, dispatch }}>
             {children}
         </PostContext.Provider>
     )
-}
-
-export const usePostContext = () => {
-    const context = useContext(PostContext);
-
-    if (!context) {
-        throw new Error('usePostContext must be used inside an PostContextProvider');
-    }
-
-    return context;
 }

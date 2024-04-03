@@ -1,7 +1,7 @@
 // react hooks
-import { createContext, useContext, useEffect, useReducer } from "react";
+import { createContext, useEffect, useReducer } from "react";
 
-const AuthContext = createContext();
+export const AuthContext = createContext();
 
 const initialState = {
     user: null,
@@ -28,7 +28,7 @@ const authReducer = (state, action) => {
 export const AuthContextProvider = ({ children }) => {
     const [state, dispatch] = useReducer(authReducer, initialState);
 
-    // console.log("AuthContext state: ", state);
+    console.log("AuthContext state: ", state);
 
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem('user'));
@@ -42,14 +42,4 @@ export const AuthContextProvider = ({ children }) => {
             {children}
         </AuthContext.Provider>
     )
-}
-
-export const useAuthContext = () => {
-    const context = useContext(AuthContext);
-
-    if (!context) {
-        throw new Error('useAuthContext must be used inside an AuthContextProvider');
-    }
-
-    return context;
 }

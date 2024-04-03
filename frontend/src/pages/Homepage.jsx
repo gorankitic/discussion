@@ -1,19 +1,24 @@
-// react
+
+// components
 import { Link } from "react-router-dom";
-// context
-import { usePostContext } from "../context/PostContext";
+import PostsList from "../components/PostsList";
+// assets
+import { Plus } from "lucide-react";
+
 
 const Homepage = () => {
-    const { posts, error } = usePostContext();
+
 
     return (
-        <main className="mt-20">
-            {posts && posts.map(post => (
-                <div key={post._id} className="mb-10">
-                    <Link to={`/posts/${post._id}`}>{post.title}</Link>
-                </div>
-            ))}
-            {error && <p className="text-red-500">{error}</p>}
+        <main className="mt-4">
+            <section className="flex justify-between mb-6">
+                <h1 className="text-2xl font-medium">Ask questions, create a post</h1>
+                <Link to="/create" className="btn flex items-center gap-1">
+                    <Plus className="h-5 w-5" />
+                    Ask question
+                </Link>
+            </section>
+            <PostsList />
         </main>
     )
 }

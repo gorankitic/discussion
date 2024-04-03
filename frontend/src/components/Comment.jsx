@@ -2,17 +2,17 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 // components
-import CommentForm from "./CommentForm";
+import Form from "./Form";
 import CommentList from "./CommentList";
 import IconButton from "./IconButton";
 import UserAvatar from "./UserAvatar";
 // context
-import { useCommentContext } from "../context/CommentContext";
-import { useAuthContext } from "../context/AuthContext";
+import { useCommentContext } from "../hooks/useCommentContext";
+import { useAuthContext } from "../hooks/useAuthContext";
 // services
 import { createComment, deleteComment, updateComment } from "../services/commentApi";
 // assets
-import { Reply, SquarePen, Trash } from "lucide-react";
+import { Reply, Send, SquarePen, Trash } from "lucide-react";
 // date formatter
 import { format } from "date-fns";
 
@@ -84,23 +84,23 @@ const Comment = ({ comment }) => {
                 <main>
                     {isEditing
                         ?
-                        <CommentForm
+                        <Form
                             label="Update"
                             autoFocus={true}
                             initialValue={comment.content}
                             handleSubmit={handleUpdate}
                             commentId={comment._id}
+                            Icon={Send}
                         />
                         :
                         <p className="mt-1">{comment.content}</p>
                     }
                 </main>
-                <footer className="flex gap-2 justify-end mt-2">
+                <section className="flex gap-2 justify-end mt-2">
                     {isEditing && <span className="text-xs">Press ESC to cancel</span>}
                     {!(isEditing || isReplying) && user && (
                         <IconButton
                             Icon={Reply}
-                            isReplying={isReplying}
                             onClick={() => {
                                 setIsReplying(true);
                                 dispatch({ type: "buttons/disabled" })
@@ -111,7 +111,6 @@ const Comment = ({ comment }) => {
                         <>
                             <IconButton
                                 Icon={SquarePen}
-                                isEditing={isEditing}
                                 onClick={() => {
                                     setIsEditing(true);
                                     dispatch({ type: "buttons/disabled" })
@@ -120,14 +119,15 @@ const Comment = ({ comment }) => {
                             <IconButton Icon={Trash} onClick={() => { handleDelete(); dispatch({ type: "buttons/disabled" }) }} />
                         </>
                     )}
-                </footer>
+                </section>
                 {isReplying && (
-                    <CommentForm
+                    <Form
                         label="Reply"
                         placeholder="Write a reply..."
                         autoFocus={true}
                         handleSubmit={handleReply}
                         parentId={comment._id}
+                        Icon={Reply}
                     />
                 )}
                 {isReplying && <span className="text-xs flex justify-end mt-1">Press ESC to cancel</span>}

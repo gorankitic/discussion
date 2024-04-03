@@ -3,7 +3,7 @@ import { useState } from "react";
 // components
 import Loader from "./Loader";
 
-const CommentForm = ({ label, initialValue = "", handleSubmit, autoFocus = false, placeholder }) => {
+const Form = ({ label, initialValue = "", handleSubmit, autoFocus = false, placeholder, Icon }) => {
     const [content, setContent] = useState(initialValue);
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -29,13 +29,14 @@ const CommentForm = ({ label, initialValue = "", handleSubmit, autoFocus = false
                     placeholder={placeholder}
                     onChange={(e) => { setContent(e.target.value) }}
                 />
-                <button disabled={isLoading || content === ""} onClick={handleClick} className="btn w-24">
-                    {isLoading ? <Loader /> : label}
+                <button disabled={isLoading || content === ""} onClick={handleClick} className="btn flex justify-center items-center gap-[6px] w-24">
+                    <Icon className="w-5 h-5" />
+                    {isLoading ? <Loader color="text-neutral-100" /> : label}
                 </button>
             </div>
-            <span>{error && <p className="text-red-500">{error}</p>}</span>
+            {error && <p className="text-red-500">{error}</p>}
         </>
     )
 }
 
-export default CommentForm;
+export default Form;

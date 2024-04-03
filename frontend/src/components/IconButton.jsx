@@ -1,5 +1,5 @@
 // context
-import { useCommentContext } from "../context/CommentContext";
+import { useCommentContext } from "../hooks/useCommentContext";
 
 const IconButton = ({ Icon, onClick }) => {
     const { disabled } = useCommentContext();
