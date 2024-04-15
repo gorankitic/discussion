@@ -2,7 +2,7 @@
 
 Discussion is a student project and a simple full-stack application where users can create questions and have discussions with other users creating comments and replies.
 
-Practicing: Fetching data, error handling, handling global state with context api, creating custom hooks, creating pagination
+Practicing: Fetching data, error handling, handling global state with context api, creating custom hooks, creating pagination, infinite scroll, infinite nested comments system...
 
 ©️ 2024 Goran Kitic
 
