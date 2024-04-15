@@ -58,7 +58,7 @@ const Notifications = () => {
         <div className="flex flex-col gap-2 w-full mx-auto mb-10">
             <h1 className="text-red-400 text-2xl justify-start my-4">Notifications:</h1>
             {error && <p className="text-red-500">{error}</p>}
-            {notifications
+            {notifications && notifications.length > 0
                 ?
                 notifications.map((notification, index) => {
                     if (notifications.length === index + 1) {
@@ -77,7 +77,7 @@ const Notifications = () => {
                     }
                 })
                 :
-                <p className="text-2xl">There are no notifications.</p>
+                <p className="text-xl text-center">There are no notifications.</p>
             }
             {isLoading && (
                 <div className="text-center my-6">
