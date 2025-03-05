@@ -8,7 +8,8 @@ const cors = require("cors");
 const AppError = require("./lib/appError");
 // middlewares
 const globalErrorHandler = require("./middlewares/globalErrorHandler");
-
+const { limiter } = require("./middlewares/limiters");
+const userRouter = require("./routes/userRoutes");
 // Configure environment variables
 require("dotenv").config();
 
@@ -17,14 +18,15 @@ const app = express();
 
 // MIDDLEWARES
 
+// Prevent brute-force attacks, limit number of requests from same IP address
+app.use("/api", limiter);
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({ origin: process.env.APP_ORIGIN, credentials: true }));
 
 // (Routers)
-app.use("/api/v1/test", (req, res, next) => {
-    res.status(200).json({ status: "success" });
-})
+app.use("/api/v1/users", userRouter);
 
 app.all("*", (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
