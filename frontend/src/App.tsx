@@ -1,7 +1,8 @@
 // lib
 import { Route, Routes } from "react-router";
 // components
-import AppLayout from "@/components/AppLayout";
+import ProtectedLayout from "@/components/ProtectedLayout";
+import PublicLayout from "@/components/PublicLayout";
 // pages
 import Home from "@/pages/Home";
 import SignUp from "@/pages/SignUp";
@@ -13,16 +14,18 @@ import ResetPassword from "@/pages/ResetPassword";
 function App() {
     return (
         <Routes>
-            <Route element={<AppLayout />}>
+            <Route element={<ProtectedLayout />}>
                 <Route path="/" element={<Home />} />
+                <Route path="verify-email" element={<VerifyEmail />} />
+            </Route>
+            <Route element={<PublicLayout />}>
                 <Route path="signup" element={<SignUp />} />
                 <Route path="signin" element={<SignIn />} />
-                <Route path="verify-email" element={<VerifyEmail />} />
                 <Route path="forgot-password" element={<ForgotPassword />} />
                 <Route path="reset-password/:resetToken" element={<ResetPassword />} />
-            </Route>
-        </Routes>
+            </Route >
+        </Routes >
     )
 }
 
-export default App
+export default App;
