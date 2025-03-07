@@ -10,6 +10,7 @@ import SignIn from "@/pages/SignIn";
 import VerifyEmail from "@/pages/VerifyEmail";
 import ForgotPassword from "@/pages/ForgotPassword";
 import ResetPassword from "@/pages/ResetPassword";
+import Settings from "@/pages/Settings";
 
 function App() {
     return (
@@ -17,6 +18,7 @@ function App() {
             <Route element={<ProtectedLayout />}>
                 <Route path="/" element={<Home />} />
                 <Route path="verify-email" element={<VerifyEmail />} />
+                <Route path="settings" element={<Settings />} />
             </Route>
             <Route element={<PublicLayout />}>
                 <Route path="signup" element={<SignUp />} />

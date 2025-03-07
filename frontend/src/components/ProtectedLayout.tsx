@@ -22,7 +22,7 @@ const ProtectedLayout = () => {
         )
     }
     return (
-        <div className="flex flex-col min-h-screen max-w-7xl mx-auto px-5">
+        <div className="flex flex-col min-h-screen max-w-5xl mx-auto px-5">
             <Header />
             <Outlet />
             <Footer />

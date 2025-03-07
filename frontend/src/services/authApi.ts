@@ -1,5 +1,5 @@
 // lib
-import { ForgotPasswordSchema, ResetPasswordSchema, SignInSchema, SignUpSchema } from "@/lib/types";
+import { ForgotPasswordSchema, ResetPasswordSchema, SignInSchema, SignUpSchema, UpdatePasswordSchema, UpdateUserSchema } from "@/lib/types";
 
 const baseApiUrl = import.meta.env.VITE_API_URL;
 
@@ -104,6 +104,34 @@ export const getUserApi = async () => {
     const response = await fetch(`${baseApiUrl}/api/v1/users`, {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
+    });
+    const json = await response.json();
+    if (!response.ok) {
+        throw new Error(json.message);
+    }
+    return json;
+}
+
+export const updateUserApi = async (data: UpdateUserSchema) => {
+    const response = await fetch(`${baseApiUrl}/api/v1/users/updateMe`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(data)
+    });
+    const json = await response.json();
+    if (!response.ok) {
+        throw new Error(json.message);
+    }
+    return json;
+}
+
+export const updatePasswordApi = async (data: UpdatePasswordSchema) => {
+    const response = await fetch(`${baseApiUrl}/api/v1/users/updatePassword`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(data)
     });
     const json = await response.json();
     if (!response.ok) {

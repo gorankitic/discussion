@@ -19,10 +19,10 @@ const UserButton = () => {
     return (
         <DropdownMenu modal={false}>
             <DropdownMenuTrigger>
-                <Avatar className="relative size-7 md:size-8" aria-label={`Avatar of ${user.name}`}>
-                    {/* {user.photoUrl && (
-                        
-                    )} */}
+                <Avatar className="relative size-8 object-cover" aria-label={`Avatar of ${user.name}`}>
+                    {user.photoUrl && (
+                        <img src={user.photoUrl} />
+                    )}
                     {!user.photoUrl && (
                         <AvatarFallback>
                             {user.name?.charAt(0).toLocaleUpperCase()}
@@ -30,15 +30,13 @@ const UserButton = () => {
                     )}
                 </Avatar>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-48 px-5 py-3" align="end">
+            <DropdownMenuContent className="w-64 px-5 py-3" align="end">
                 <div className="mb-2 flex items-center gap-3">
                     {user.photoUrl && (
                         <img
                             src={user.photoUrl}
                             alt={user.name!}
-                            width={40}
-                            height={40}
-                            className="rounded-full"
+                            className="rounded-full object-cover size-10"
                         />
                     )}
                     <div className="">
