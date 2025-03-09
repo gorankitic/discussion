@@ -1,5 +1,8 @@
+// modules
+const mongoose = require("mongoose");
 // models
 const Post = require("../models/postModel");
+const Comment = require("../models/commentModel");
 // lib
 const AppError = require("../lib/AppError");
 const catchAsync = require("../lib/catchAsync");
@@ -56,7 +59,9 @@ exports.getAllPosts = catchAsync(async (req, res, next) => {
 // GET method
 // Protected route /api/v1/posts/:postId
 exports.getPost = catchAsync(async (req, res, next) => {
-    const post = await Post.findById(req.params.postId);
+    const post = await Post
+        .findById(req.params.postId)
+        .populate({ path: "comments", options: { sort: { 'createdAt': -1 } } });
 
     if (!post) {
         return next(new AppError("There is no post with that ID.", 404));
@@ -105,8 +110,26 @@ exports.deletePost = catchAsync(async (req, res, next) => {
         return next(new AppError("You are not authorized to delete this post.", 403));
     }
 
-    // Delete the post
-    await Post.findByIdAndDelete(req.params.postId);
+    // MongoDB transactions ensure that a series of operations on the database either all succeed or all fail
+    // Start a session for transaction (keeps track of all operations that are part of the transaction)
+    const session = await mongoose.startSession();
+    try {
+        // Start the transaction
+        session.startTransaction();
 
-    res.status(204).json({ status: "success" });
+        await Comment.deleteMany({ post: req.params.postId }).session(session);
+        await Post.findByIdAndDelete(req.params.postId).session(session);
+
+        // (On succeed) Commit the transaction (making all the changes permanent)
+        await session.commitTransaction();
+
+        res.status(204).json({ status: "success" });
+    } catch (err) {
+        // (On error) abort the transaction, reverting all changes made in that transaction
+        await session.abortTransaction();
+        return next(new AppError("Deleting post failed.", 500));
+    } finally {
+        // End the session
+        session.endSession();
+    }
 });

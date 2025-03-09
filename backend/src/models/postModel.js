@@ -24,6 +24,15 @@ postSchema.pre(/^find/, function (next) {
     next();
 });
 
+// Parent referencing: Parent (Post) doesn't know about children (Comments)
+// Virtual populate parent (Post) with children (Comments)
+// Virtual field "comments" is not stored into Post document, it is populated on Post query
+postSchema.virtual("comments", {
+    ref: "Comment",
+    foreignField: "post",
+    localField: "_id"
+});
+
 const Post = mongoose.model("Post", postSchema);
 
 module.exports = Post;
