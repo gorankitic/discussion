@@ -117,8 +117,10 @@ exports.deletePost = catchAsync(async (req, res, next) => {
         // Start the transaction
         session.startTransaction();
 
-        await Comment.deleteMany({ post: req.params.postId }).session(session);
-        await Post.findByIdAndDelete(req.params.postId).session(session);
+        await Promise.all([
+            Comment.deleteMany({ post: req.params.postId }).session(session),
+            Post.findByIdAndDelete(req.params.postId).session(session)
+        ]);
 
         // (On succeed) Commit the transaction (making all the changes permanent)
         await session.commitTransaction();

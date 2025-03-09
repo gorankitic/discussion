@@ -82,25 +82,25 @@ exports.deleteComment = catchAsync(async (req, res, next) => {
         const deleteNestedComments = async (commentId) => {
             const nestedComments = await Comment.find({ parent: commentId }).session(session);
             if (nestedComments.length === 0) return;
-
+            // Delete all nested comments concurrently
             await Promise.all(nestedComments.flatMap((nestedComment) => [
                 deleteNestedComments(nestedComment._id),
                 Comment.deleteOne({ _id: nestedComment._id }).session(session)
             ]));
         }
 
-        // Call the recursive function to delete nested comments under the root comment
-        await deleteNestedComments(comment._id);
-
-        // Delete the root comment
-        await Comment.findByIdAndDelete(comment._id).session();
+        // Delete nested comments and root comment concurrently
+        await Promise.all([
+            deleteNestedComments(comment._id),
+            Comment.findByIdAndDelete(comment._id).session(session)
+        ]);
 
         // (On succeed) Commit the transaction (making all the changes permanent)
         await session.commitTransaction();
 
         res.status(204).json({ status: "success" });
     } catch (error) {
-        // (On error) abort the transaction, reverting all changes made in that transaction
+        // (On error) Abort the transaction, reverting all changes made in that transaction
         await session.abortTransaction();
         return next(new AppError("Deleting comment failed.", 500));
     } finally {
