@@ -9,7 +9,9 @@ const AppError = require("./lib/appError");
 // middlewares
 const globalErrorHandler = require("./middlewares/globalErrorHandler");
 const { limiter } = require("./middlewares/limiters");
+// (routers)
 const userRouter = require("./routes/userRoutes");
+const postRouter = require("./routes/postRoutes");
 // Configure environment variables
 require("dotenv").config();
 
@@ -27,6 +29,7 @@ app.use(cors({ origin: process.env.APP_ORIGIN, credentials: true }));
 
 // (Routers)
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/posts", postRouter);
 
 app.all("*", (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
