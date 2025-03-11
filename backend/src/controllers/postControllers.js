@@ -59,9 +59,7 @@ exports.getAllPosts = catchAsync(async (req, res, next) => {
 // GET method
 // Protected route /api/v1/posts/:postId
 exports.getPost = catchAsync(async (req, res, next) => {
-    const post = await Post
-        .findById(req.params.postId)
-        .populate({ path: "comments", options: { sort: { 'createdAt': -1 } } });
+    const post = await Post.findById(req.params.postId);
 
     if (!post) {
         return next(new AppError("There is no post with that ID.", 404));

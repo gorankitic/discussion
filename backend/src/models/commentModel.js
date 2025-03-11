@@ -18,13 +18,17 @@ const commentSchema = mongoose.Schema({
     },
     parent: {
         type: mongoose.Schema.ObjectId,
-        ref: "Comment"
+        ref: "Comment",
+        default: null
     }
 }, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
 
+commentSchema.index({ post: 1, parent: 1 });
+commentSchema.index({ createdAt: -1 });
+
 // Pre-query mongoose hook to populate comment document with user document
 commentSchema.pre(/^find/, function (next) {
-    this.populate({ path: 'user', select: "name photoUrl" });
+    this.populate({ path: "user", select: "name photoUrl" });
     next();
 });
 

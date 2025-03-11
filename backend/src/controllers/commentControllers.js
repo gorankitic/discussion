@@ -5,6 +5,7 @@ const Comment = require("../models/commentModel");
 // lib
 const AppError = require("../lib/AppError");
 const catchAsync = require("../lib/catchAsync");
+const { getNestedCommentsRecursively } = require("../lib/utils");
 
 // Create a comment document
 // POST method
@@ -34,6 +35,45 @@ exports.createComment = catchAsync(async (req, res) => {
     });
 });
 
+// Find all post comments
+// GET method
+// Protected route /api/v1/posts/:postId/comments
+exports.getAllComments = catchAsync(async (req, res, next) => {
+    // Pagination
+    // ?page=1&limit=10 -> page 1: 1-10, page 2: 11-20...
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 10;
+    const skip = (page - 1) * limit;
+
+    // Find root comments (where parent is null)
+    const comments = await Comment
+        .find({ post: req.params.postId, parent: null })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+
+    // Find nested comments for all root comments concurrently
+    const commentsTree = await Promise.all(
+        comments.map(async (comment) => ({
+            ...comment.toObject(),
+            nestedComments: await getNestedCommentsRecursively(comment._id),
+        }))
+    );
+
+    const totalComments = await Comment.countDocuments({ post: req.params.postId, parent: null });
+    const hasMorePages = skip + comments.length < totalComments;
+
+    res.status(200).json({
+        status: 'success',
+        page,
+        totalComments,
+        totalPages: Math.ceil(totalComments / limit),
+        hasMorePages,
+        results: comments.length,
+        comments: commentsTree,
+    });
+});
+
 // Update comment document
 // PATCH method
 // Protected route /api/v1/posts/:postId/comments/:commentId
@@ -60,7 +100,7 @@ exports.updateComment = catchAsync(async (req, res, next) => {
 
 // Delete comment document
 // DELETE method
-// Protected route /api/posts/:postId/comments/:commentId
+// Protected route /api/v1/posts/:postId/comments/:commentId
 exports.deleteComment = catchAsync(async (req, res, next) => {
     const comment = await Comment.findById(req.params.commentId);
     if (!comment) {

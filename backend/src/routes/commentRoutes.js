@@ -1,7 +1,7 @@
 // modules
 const express = require("express");
 // controllers
-const { createComment, updateComment, deleteComment } = require("../controllers/commentControllers");
+const { createComment, getAllComments, updateComment, deleteComment } = require("../controllers/commentControllers");
 // middlewares
 const { protect } = require("../middlewares/authMiddlewares");
 
@@ -12,6 +12,7 @@ router.use(protect);
 // /api/v1/posts/:postId/comments
 router
     .route("/")
+    .get(getAllComments)
     .post(createComment)
 
 // /api/v1/posts/:postId/comments/:commentId
