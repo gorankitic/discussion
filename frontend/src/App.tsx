@@ -11,6 +11,7 @@ import VerifyEmail from "@/pages/VerifyEmail";
 import ForgotPassword from "@/pages/ForgotPassword";
 import ResetPassword from "@/pages/ResetPassword";
 import Settings from "@/pages/Settings";
+import PostPage from "./pages/PostPage";
 
 function App() {
     return (
@@ -19,6 +20,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="verify-email" element={<VerifyEmail />} />
                 <Route path="settings" element={<Settings />} />
+                <Route path="posts/:postId" element={<PostPage />} />
             </Route>
             <Route element={<PublicLayout />}>
                 <Route path="signup" element={<SignUp />} />

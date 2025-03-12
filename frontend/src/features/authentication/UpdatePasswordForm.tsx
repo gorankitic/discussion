@@ -1,9 +1,12 @@
-import { updatePasswordSchema, UpdatePasswordSchema } from "@/lib/types";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff, KeyRound, Send } from "lucide-react";
+// lib
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { motion } from "framer-motion";
+import { Eye, EyeOff, KeyRound, Send } from "lucide-react";
+// types
+import { updatePasswordSchema, UpdatePasswordSchema } from "@/lib/types/schemas";
+// hooks
 import { useUpdatePassword } from "@/features/authentication/useUpdatePassword";
 
 const UpdatePasswordForm = () => {

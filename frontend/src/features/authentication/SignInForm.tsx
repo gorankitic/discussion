@@ -4,14 +4,13 @@ import { Link } from "react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
+import { Eye, EyeOff, KeyRound, Mail, Send } from "lucide-react";
 // types
-import { signInSchema, SignInSchema } from "@/lib/types";
+import { signInSchema, SignInSchema } from "@/lib/types/schemas";
 // hooks
 import { useSignIn } from "@/features/authentication/useSignIn";
 // components
 import AuthCard from "@/features/authentication/AuthCard";
-// icons
-import { Eye, EyeOff, KeyRound, Mail, Send } from "lucide-react";
 
 const SignInForm = () => {
     const [passwordVisible, setPasswordVisible] = useState(false);

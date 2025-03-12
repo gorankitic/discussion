@@ -1,5 +1,5 @@
-// lib
-import { ForgotPasswordSchema, ResetPasswordSchema, SignInSchema, SignUpSchema, UpdatePasswordSchema, UpdateUserSchema } from "@/lib/types";
+// types
+import { ForgotPasswordSchema, ResetPasswordSchema, SignInSchema, SignUpSchema, UpdatePasswordSchema, UpdateUserSchema } from "@/lib/types/schemas";
 
 const baseApiUrl = import.meta.env.VITE_API_URL;
 

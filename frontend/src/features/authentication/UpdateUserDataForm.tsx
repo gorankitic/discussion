@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Mail, Send, Upload, User } from "lucide-react";
 // types
-import { updateUserSchema, UpdateUserSchema } from "@/lib/types";
+import { updateUserSchema, UpdateUserSchema } from "@/lib/types/schemas";
 // hooks
 import { useUser } from "@/features/authentication/useUser";
 import { useUpdateUser } from "@/features/authentication/useUpdateUser";

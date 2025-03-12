@@ -3,14 +3,13 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
+import { Eye, EyeOff, KeyRound, Mail, Send, User } from "lucide-react";
 // types
-import { signUpSchema, SignUpSchema } from "@/lib/types";
+import { signUpSchema, SignUpSchema } from "@/lib/types/schemas";
 // hooks
 import { useSignup } from "@/features/authentication/useSignup";
 // components
 import AuthCard from "@/features/authentication/AuthCard";
-// icons
-import { Eye, EyeOff, KeyRound, Mail, Send, User } from "lucide-react";
 
 const SignUpForm = () => {
     const [passwordVisible, setPasswordVisible] = useState(false);

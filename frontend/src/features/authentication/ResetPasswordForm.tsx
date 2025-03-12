@@ -6,14 +6,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { Eye, EyeOff, KeyRound, Send } from "lucide-react";
 // types
-import { resetPasswordSchema, ResetPasswordSchema } from "@/lib/types";
+import { resetPasswordSchema, ResetPasswordSchema } from "@/lib/types/schemas";
 // components
 import AuthCard from "@/features/authentication/AuthCard";
 // api service
 import { resetPasswordApi } from "@/services/authApi";
-// icons
-import { Eye, EyeOff, KeyRound, Send } from "lucide-react";
 
 const ResetPasswordForm = () => {
     const { resetToken } = useParams();

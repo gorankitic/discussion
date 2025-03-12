@@ -4,14 +4,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { Mail, Send } from "lucide-react";
 // types
-import { forgotPasswordSchema, ForgotPasswordSchema } from "@/lib/types";
+import { forgotPasswordSchema, ForgotPasswordSchema } from "@/lib/types/schemas";
 // components
 import AuthCard from "@/features/authentication/AuthCard";
 // api service
 import { forgotPasswordApi } from "@/services/authApi";
-// icons
-import { Mail, Send } from "lucide-react";
 
 const ForgotPasswordForm = () => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm<ForgotPasswordSchema>({ resolver: zodResolver(forgotPasswordSchema) });
