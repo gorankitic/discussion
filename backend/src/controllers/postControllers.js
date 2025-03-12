@@ -75,7 +75,7 @@ exports.getPost = catchAsync(async (req, res, next) => {
 // PATCH method
 // Protected route /api/v1/posts/:postId
 exports.updatePost = catchAsync(async (req, res, next) => {
-    const { content } = req.body;
+    const { title, content } = req.body;
 
     const post = await Post.findById(req.params.postId);
     if (!post) {
@@ -87,6 +87,7 @@ exports.updatePost = catchAsync(async (req, res, next) => {
     }
 
     post.content = content;
+    post.title = title;
     await post.save();
 
     res.status(200).json({
