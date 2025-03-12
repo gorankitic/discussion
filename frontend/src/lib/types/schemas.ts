@@ -36,8 +36,8 @@ export const updatePasswordSchema = z.object({
 });
 export type UpdatePasswordSchema = z.infer<typeof updatePasswordSchema>;
 
-export const createPostSchema = z.object({
+export const postSchema = z.object({
     title: z.string().min(1, { message: "Title is required" }).max(50, { message: "Allowed 50 characters maximum" }),
     content: z.string().min(1, { message: "Description is required" }).max(200, { message: "Allowed 200 characters maximum" })
 });
-export type CreatePostSchema = z.infer<typeof createPostSchema>;
+export type PostSchema = z.infer<typeof postSchema>;

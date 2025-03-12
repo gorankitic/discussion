@@ -1,4 +1,4 @@
-export type User = {
+export type TUser = {
     _id: string,
     name: string,
     email: string,
@@ -7,10 +7,10 @@ export type User = {
     isVerified: boolean
 }
 
-export type Post = {
+export type TPost = {
     _id: string;
     title: string;
     content: string;
     createdAt: string;
-    user: User
+    user: TUser
 }

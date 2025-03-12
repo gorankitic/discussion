@@ -2,13 +2,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 // api service
-import { createPostApi } from "@/services/postsApi";
+import { updatePostApi } from "@/services/postsApi";
 
-export function useCreatePost(setOpen: (open: boolean) => void) {
+export function useUpdatePost(setOpen: (open: boolean) => void) {
     const queryClient = useQueryClient();
 
-    const { isPending: isCreating, mutate: createPost } = useMutation({
-        mutationFn: createPostApi,
+    const { isPending: isUpdating, mutate: updatePost } = useMutation({
+        mutationFn: updatePostApi,
         onSuccess: () => {
             toast.success("Post created successfully.");
             queryClient.invalidateQueries({ queryKey: ["posts"] });
@@ -19,5 +19,5 @@ export function useCreatePost(setOpen: (open: boolean) => void) {
         }
     });
 
-    return { createPost, isCreating };
+    return { updatePost, isUpdating };
 }

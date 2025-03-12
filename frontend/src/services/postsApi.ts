@@ -1,5 +1,5 @@
 // types
-import { CreatePostSchema } from "@/lib/types/schemas";
+import { PostSchema } from "@/lib/types/schemas";
 
 const baseApiUrl = import.meta.env.VITE_API_URL;
 
@@ -30,9 +30,23 @@ export const getPostApi = async (postId: string) => {
     return json;
 }
 
-export const createPostApi = async (data: CreatePostSchema) => {
+export const createPostApi = async (data: PostSchema) => {
     const response = await fetch(`${baseApiUrl}/api/v1/posts`, {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(data)
+    });
+    const json = await response.json();
+    if (!response.ok) {
+        throw new Error(json.message);
+    }
+    return json;
+}
+
+export const updatePostApi = async ({ data, postId }: { data: PostSchema, postId: string }) => {
+    const response = await fetch(`${baseApiUrl}/api/v1/posts/${postId}`, {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify(data)

@@ -2,14 +2,15 @@
 import { Link } from "react-router";
 import { formatDistance } from "date-fns";
 // types
-import type { Post } from "@/lib/types";
+import type { TPost } from "@/lib/types/types";
 // hooks
 import { useUser } from "@/features/authentication/useUser";
 // components
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import DeletePost from "@/features/posts/DeletePost";
+import CreateEditPost from "@/features/posts/CreateEditPost";
 
-const Post = ({ post }: { post: Post }) => {
+const Post = ({ post }: { post: TPost }) => {
     const { user } = useUser();
 
     return (
@@ -31,7 +32,10 @@ const Post = ({ post }: { post: Post }) => {
                 <div className="ml-auto flex items-center gap-2">
                     <p>{formatDistance(new Date(post.createdAt), new Date(), { addSuffix: true })}</p>
                     {post.user._id === user._id && (
-                        <DeletePost postId={post._id} />
+                        <>
+                            <CreateEditPost postToEdit={post} />
+                            <DeletePost postId={post._id} />
+                        </>
                     )}
                 </div>
             </header>

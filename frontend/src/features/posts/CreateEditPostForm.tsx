@@ -4,20 +4,29 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { PencilLine, Send } from "lucide-react";
 import { motion } from "framer-motion";
 // types
-import { CreatePostSchema, createPostSchema } from "@/lib/types/schemas";
+import { TPost } from "@/lib/types/types";
+import { PostSchema, postSchema } from "@/lib/types/schemas";
 // hooks
 import { useCreatePost } from "@/features/posts/useCreatePost";
+import { useUpdatePost } from "@/features/posts/useUpdatePost";
 
-interface CreatePostFormProps {
+interface CreateEditPostFormProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    postToEdit?: TPost
 }
 
-const CreatePostForm = ({ setOpen }: CreatePostFormProps) => {
-    const { createPost, isPending } = useCreatePost(setOpen);
-    const { register, handleSubmit, formState: { errors } } = useForm<CreatePostSchema>({ resolver: zodResolver(createPostSchema) });
+const CreateEditPostForm = ({ setOpen, postToEdit }: CreateEditPostFormProps) => {
+    const { createPost, isCreating } = useCreatePost(setOpen);
+    const { updatePost, isUpdating } = useUpdatePost(setOpen);
+    const { register, handleSubmit, formState: { errors } } = useForm<PostSchema>({
+        resolver: zodResolver(postSchema),
+        defaultValues: postToEdit ? postToEdit : {}
+    });
 
-    const onSubmit = (data: CreatePostSchema) => {
-        createPost(data);
+    const isWorking = isCreating || isUpdating;
+
+    const onSubmit = (data: PostSchema) => {
+        postToEdit ? updatePost({ data, postId: postToEdit._id }) : createPost(data);
     }
 
     return (
@@ -30,7 +39,7 @@ const CreatePostForm = ({ setOpen }: CreatePostFormProps) => {
                         autoComplete="off"
                         autoFocus
                         placeholder="Write title..."
-                        disabled={isPending}
+                        disabled={isWorking}
                         className="w-full pl-10 pr-4 py-1 rounded-md bg-white placeholder-gray-400 border border-gray-300 focus:outline-blue-600"
                     />
                     <PencilLine className="size-4 absolute left-3 top-[9px] text-gray-500 pointer-events-none" />
@@ -40,7 +49,7 @@ const CreatePostForm = ({ setOpen }: CreatePostFormProps) => {
                     <textarea
                         {...register("content")}
                         placeholder="Describe your problem..."
-                        disabled={isPending}
+                        disabled={isWorking}
                         className="w-full pl-10 pr-4 py-1 min-h-60 rounded-md bg-white placeholder-gray-400 border border-gray-300 focus:outline-blue-600"
                     />
                     {errors.content && <p className="text-red-500 text-sm">{errors.content.message}</p>}
@@ -49,12 +58,12 @@ const CreatePostForm = ({ setOpen }: CreatePostFormProps) => {
             <motion.button
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                disabled={isPending}
+                disabled={isWorking}
                 className="flex gap-2 items-center justify-center mx-auto w-full py-2 px-4 bg-gradient-to-r from-blue-400 to-blue-600 text-white rounded-md shadow-md focus:outline-none transition duration-100 mt-5 cursor-pointer"
             >
-                {isPending ? <div className='size-5 animate-spin rounded-full border-b-2 border-white'></div> : (
+                {isWorking ? <div className='size-5 animate-spin rounded-full border-b-2 border-white'></div> : (
                     <>
-                        <span>Create new post</span>
+                        {!postToEdit ? <span>Create new post</span> : <span>Update post</span>}
                         <Send className='size-4 text-blue-50' />
                     </>
                 )}
@@ -62,4 +71,4 @@ const CreatePostForm = ({ setOpen }: CreatePostFormProps) => {
         </form>
     )
 }
-export default CreatePostForm;
+export default CreateEditPostForm;

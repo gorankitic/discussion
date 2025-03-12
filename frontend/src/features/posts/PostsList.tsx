@@ -1,3 +1,5 @@
+// types
+import { TPost } from "@/lib/types/types";
 // components
 import Post from "@/features/posts/Post";
 // api service
@@ -10,7 +12,7 @@ const PostsList = () => {
         <>
             <h1 className="font-medium text-xl mb-4">Latest questions:</h1>
             <ul>
-                {data && data.posts.length > 0 ? data.posts.map((post: any) => (
+                {data && data.posts.length > 0 ? data.posts.map((post: TPost) => (
                     <li key={post._id}>
                         <Post post={post} />
                     </li>
