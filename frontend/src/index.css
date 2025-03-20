@@ -9,6 +9,31 @@ body {
 	@apply text-gray-800 font-['Roboto'];
 }
 
+/* Base class for element that has collapse line functionallity */
+/* w-5 (20px) is set to make it easier for users to click, width of line is 2px so it need to be translated horizontally by 50% of its width */
+.collapse-line {
+	@apply w-5 relative mb-4 cursor-pointer -translate-x-1/2;
+}
+
+/* ::before pseudo-element allows to insert content before the actual content of an element. */
+/* absolute: This positions ::before element absolutely inside its parent (which has relative positioning). It will be positioned based on the parent’s bounds. */
+/* top-0: This sets the top of the ::before element to 0, meaning it will align with the top of its parent element. */
+/* bottom-0: This sets the bottom of the ::before element to 0, meaning it will stretch to the bottom of its parent element. */
+/* left-1/2: This positions the left edge of the ::before element at 50% of the parent’s width (centered horizontally). */
+.collapse-line::before {
+	@apply content-[""] absolute top-0 bottom-0 left-1/2 w-[2px] bg-blue-500 transition-colors;
+}
+
+/* The :focus-visible pseudo-class targets elements that are focused and are visibly focused */
+/* This is commonly used for accessibility reasons, especially for keyboard navigation */
+/* When an element receives focus (like when tabbing through elements), the browser shows a visible outline */
+/* :hover: This pseudo-class applies the styles when the element is hovered over */
+/* :focus-visible: This applies the styles when the element is focused and is visible */
+.collapse-line:hover::before,
+.collapse-line:focus-visible::before {
+	@apply bg-blue-700;
+}
+
 :root {
 	--background: oklch(1 0 0);
 	--foreground: oklch(0.13 0.028 261.692);

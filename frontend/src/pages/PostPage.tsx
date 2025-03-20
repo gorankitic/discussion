@@ -1,61 +1,52 @@
-import { getCommentsApi } from "@/services/commentsApi";
-import { getPostApi } from "@/services/postsApi";
-import { useQuery } from "@tanstack/react-query";
+// lib
 import { useParams } from "react-router"
-
-// Render individual comments with nested replies recursively
-const renderNestedComments = (comments: any) => {
-    return comments.map((comment: any) => (
-        <div key={comment._id} className="ml-4">
-            <div className="comment">
-                <p><strong>{comment.user.name}</strong>: {comment.content}</p>
-            </div>
-            {comment.nestedComments && comment.nestedComments.length > 0 && (
-                <div className="nested-comments">
-                    {renderNestedComments(comment.nestedComments)}
-                </div>
-            )}
-        </div>
-    ));
-};
-
+// types
+import { CommentSchema } from "@/lib/types/schemas";
+// hooks
+import { usePost } from "@/features/posts/usePost";
+import { useComments } from "@/features/comments/useComments";
+import { useCreateComment } from "@/features/comments/useCreateComment";
+// components
+import Loader from "@/components/Loader";
+import Post from "@/features/posts/Post";
+import Form from "@/features/comments/Form";
+import CommentsList from "@/features/comments/CommentsList";
 
 const PostPage = () => {
     const { postId } = useParams();
+    const { data, isLoadingPost } = usePost(postId!);
+    const { dataComments, isLoadingComments } = useComments(postId!);
+    const { isCreating, createComment } = useCreateComment();
 
-    const { data } = useQuery({
-        queryKey: ["post"],
-        queryFn: () => getPostApi(postId!),
-    });
+    const onSubmitComment = (data: CommentSchema) => {
+        if (!postId) return;
+        createComment({ postId, parentId: null, data });
+    }
 
-    const { data: dataComments } = useQuery({
-        queryKey: ["comments"],
-        queryFn: () => getCommentsApi(postId!),
-    });
-
-    console.log(dataComments)
+    if (isLoadingPost || isLoadingComments) {
+        return (
+            <div className="flex-1">
+                <Loader className="size-12 mt-40" />
+            </div>
+        )
+    }
 
     return (
-        <div className="flex-1">
-            <div className="flex flex-col gap-5">
-                <p>{data?.post.title}</p>
-                <p>{data?.post.content}</p>
-                <p>{data?.post.createdAt}</p>
-            </div>
-            <div>
-                <h1>COMMENTS: </h1>
-                {dataComments?.comments.map((comment: any) => (
-                    <div key={comment._id} className="root-comment" >
-                        <div className="comment">
-                            <p><strong>{comment.user.name}</strong>: {comment.content}</p>
-                        </div>
-                        <div>
-                            {renderNestedComments(comment.nestedComments)}
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </div >
+        <main className="flex-1 space-y-3">
+            {data?.post && (
+                <>
+                    <Post post={data.post} />
+                    <Form
+                        onSubmit={onSubmitComment}
+                        isLoading={isCreating}
+                        label="Comment"
+                        placeholder="Write a comment..."
+                    />
+                    {dataComments && <CommentsList comments={dataComments.comments} postId={postId!} />}
+                </>
+            )}
+        </main >
     )
 }
-export default PostPage
+
+export default PostPage;

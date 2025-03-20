@@ -1,10 +1,12 @@
 // lib
+import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router";
+// hooks
+import { useUser } from "@/features/authentication/useUser";
 // components
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { useUser } from "@/features/authentication/useUser";
-import { useEffect } from "react";
+import Loader from "@/components/Loader";
 
 const ProtectedLayout = () => {
     const navigate = useNavigate();
@@ -17,7 +19,7 @@ const ProtectedLayout = () => {
     if (isPending) {
         return (
             <div className="flex items-center justify-center w-full h-screen">
-                <div className='size-16 animate-spin rounded-full border-b-4 border-blue-500'></div>
+                <Loader className="size-16" />
             </div>
         )
     }
@@ -29,4 +31,5 @@ const ProtectedLayout = () => {
         </div>
     )
 }
+
 export default ProtectedLayout;

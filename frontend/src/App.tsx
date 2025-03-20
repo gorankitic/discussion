@@ -11,7 +11,7 @@ import VerifyEmail from "@/pages/VerifyEmail";
 import ForgotPassword from "@/pages/ForgotPassword";
 import ResetPassword from "@/pages/ResetPassword";
 import Settings from "@/pages/Settings";
-import PostPage from "./pages/PostPage";
+import PostPage from "@/pages/PostPage";
 
 function App() {
     return (

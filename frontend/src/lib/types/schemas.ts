@@ -41,3 +41,8 @@ export const postSchema = z.object({
     content: z.string().min(1, { message: "Description is required" }).max(200, { message: "Allowed 200 characters maximum" })
 });
 export type PostSchema = z.infer<typeof postSchema>;
+
+export const commentSchema = z.object({
+    content: z.string().min(1, { message: "Comment content is required" }).max(300, { message: "Allowed 300 characters maximum" })
+});
+export type CommentSchema = z.infer<typeof commentSchema>;

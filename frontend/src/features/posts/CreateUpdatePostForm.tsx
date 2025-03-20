@@ -10,23 +10,23 @@ import { PostSchema, postSchema } from "@/lib/types/schemas";
 import { useCreatePost } from "@/features/posts/useCreatePost";
 import { useUpdatePost } from "@/features/posts/useUpdatePost";
 
-interface CreateEditPostFormProps {
+interface CreateUpdatePostFormProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    postToEdit?: TPost
+    postToUpdate?: TPost
 }
 
-const CreateEditPostForm = ({ setOpen, postToEdit }: CreateEditPostFormProps) => {
+const CreateUpdatePostForm = ({ setOpen, postToUpdate }: CreateUpdatePostFormProps) => {
     const { createPost, isCreating } = useCreatePost(setOpen);
     const { updatePost, isUpdating } = useUpdatePost(setOpen);
     const { register, handleSubmit, formState: { errors } } = useForm<PostSchema>({
         resolver: zodResolver(postSchema),
-        defaultValues: postToEdit ? postToEdit : {}
+        defaultValues: postToUpdate ? postToUpdate : {}
     });
 
     const isWorking = isCreating || isUpdating;
 
     const onSubmit = (data: PostSchema) => {
-        postToEdit ? updatePost({ data, postId: postToEdit._id }) : createPost(data);
+        postToUpdate ? updatePost({ data, postId: postToUpdate._id }) : createPost(data);
     }
 
     return (
@@ -63,7 +63,7 @@ const CreateEditPostForm = ({ setOpen, postToEdit }: CreateEditPostFormProps) =>
             >
                 {isWorking ? <div className='size-5 animate-spin rounded-full border-b-2 border-white'></div> : (
                     <>
-                        {!postToEdit ? <span>Create new post</span> : <span>Update post</span>}
+                        {!postToUpdate ? <span>Create new post</span> : <span>Update post</span>}
                         <Send className='size-4 text-blue-50' />
                     </>
                 )}
@@ -71,4 +71,5 @@ const CreateEditPostForm = ({ setOpen, postToEdit }: CreateEditPostFormProps) =>
         </form>
     )
 }
-export default CreateEditPostForm;
+
+export default CreateUpdatePostForm;

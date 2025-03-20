@@ -1,13 +1,15 @@
 // types
 import { PostSchema } from "@/lib/types/schemas";
+// constants
+import { baseApiUrl, POSTS_LIMIT } from "@/lib/constants";
 
-const baseApiUrl = import.meta.env.VITE_API_URL;
 
-export const getPostsApi = async () => {
+
+export const getPostsApi = async (page: number) => {
     // The Fetch API does not throw an error for HTTP error statuses (e.g., 400 or 500). 
     // Check response.ok to handle this server errors when the promise gets resolved
     // The Fetch API rejects the promise if there's a network error, the request is aborted, or CORS errors
-    const response = await fetch(`${baseApiUrl}/api/v1/posts`, {
+    const response = await fetch(`${baseApiUrl}/api/v1/posts?page=${page}&limit=${POSTS_LIMIT}`, {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
     });

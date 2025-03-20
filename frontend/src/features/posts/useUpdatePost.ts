@@ -10,7 +10,7 @@ export function useUpdatePost(setOpen: (open: boolean) => void) {
     const { isPending: isUpdating, mutate: updatePost } = useMutation({
         mutationFn: updatePostApi,
         onSuccess: () => {
-            toast.success("Post created successfully.");
+            toast.success("Post updated successfully.");
             queryClient.invalidateQueries({ queryKey: ["posts"] });
             setOpen(false);
         },
