@@ -31,25 +31,21 @@ const Comment = ({ comment, postId, activeCommentId, setActiveCommentId, activeF
     const isUpdating = activeCommentId === comment._id && activeFormType === "update";
 
     const onSubmitReply = (data: CommentSchema) => {
-        createComment({ postId, parentId: comment._id, data },
-            {
-                onSuccess: () => {
-                    setActiveCommentId(null);
-                    setActiveFormType(null);
-                }
+        createComment({ postId, parentId: comment._id, data }, {
+            onSuccess: () => {
+                setActiveCommentId(null);
+                setActiveFormType(null);
             }
-        );
+        });
     }
 
     const onSubmitUpdate = (data: CommentSchema) => {
-        updateComment({ data, postId, commentId: comment._id },
-            {
-                onSuccess: () => {
-                    setActiveCommentId(null);
-                    setActiveFormType(null);
-                }
+        updateComment({ data, postId, commentId: comment._id }, {
+            onSuccess: () => {
+                setActiveCommentId(null);
+                setActiveFormType(null);
             }
-        );
+        });
     }
 
     useEffect(() => {
@@ -61,9 +57,7 @@ const Comment = ({ comment, postId, activeCommentId, setActiveCommentId, activeF
         }
         window.addEventListener("keydown", handleKeyDown);
         return () => {
-            window.removeEventListener("keydown", handleKeyDown)
-            setActiveCommentId(null);
-            setActiveFormType(null);
+            window.removeEventListener("keydown", handleKeyDown);
         }
     }, []);
 
@@ -112,6 +106,6 @@ const Comment = ({ comment, postId, activeCommentId, setActiveCommentId, activeF
             )}
         </>
     )
-}
+};
 
 export default Comment;

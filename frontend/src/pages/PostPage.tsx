@@ -6,6 +6,7 @@ import { CommentSchema } from "@/lib/types/schemas";
 import { usePost } from "@/features/posts/usePost";
 import { useComments } from "@/features/comments/useComments";
 import { useCreateComment } from "@/features/comments/useCreateComment";
+import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 // components
 import Loader from "@/components/Loader";
 import Post from "@/features/posts/Post";
@@ -15,8 +16,9 @@ import CommentsList from "@/features/comments/CommentsList";
 const PostPage = () => {
     const { postId } = useParams();
     const { data, isLoadingPost } = usePost(postId!);
-    const { dataComments, isLoadingComments } = useComments(postId!);
+    const { dataComments, isLoadingComments, fetchNextPage, isFetchingNextPage } = useComments(postId!);
     const { isCreating, createComment } = useCreateComment();
+    const { ref } = useInfiniteScroll(fetchNextPage);
 
     const onSubmitComment = (data: CommentSchema) => {
         if (!postId) return;
@@ -42,7 +44,14 @@ const PostPage = () => {
                         label="Comment"
                         placeholder="Write a comment..."
                     />
-                    {dataComments && <CommentsList comments={dataComments.comments} postId={postId!} />}
+                    {dataComments && dataComments.pages.map(currentPage => (
+                        <ul key={currentPage.page}>
+                            <CommentsList postId={postId!} comments={currentPage.comments} />
+                        </ul>
+                    ))}
+                    <div ref={ref}>
+                        {isFetchingNextPage && <Loader className="size-10 mt-10" />}
+                    </div>
                 </>
             )}
         </main >

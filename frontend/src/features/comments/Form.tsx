@@ -48,7 +48,7 @@ const Form = ({ onSubmit, isLoading, defaultValue = "", placeholder, label, icon
                 disabled={isLoading}
                 className="flex gap-1 items-center justify-center w-36 py-1 px-4 bg-gradient-to-r from-blue-400 to-blue-600 text-white rounded-md shadow-md focus:outline-none cursor-pointer"
             >
-                {isLoading ? <Loader className="size-5 border-blue-50" /> : (
+                {isLoading ? <Loader className="size-4 border-blue-50 border-b-2" /> : (
                     <>
                         {iconPosition === "left" && <Icon className="size-4 text-blue-50" />}
                         <span>{label}</span>

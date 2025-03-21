@@ -6,28 +6,29 @@ import { TComment } from "@/lib/types/types";
 import Comment from "@/features/comments/Comment";
 
 interface CommentsListProps {
+    postId: string,
     comments: TComment[],
-    postId: string
 }
 
-const CommentsList = ({ comments, postId }: CommentsListProps) => {
+const CommentsList = ({ postId, comments }: CommentsListProps) => {
     const [activeCommentId, setActiveCommentId] = useState<string | null>(null);
     const [activeFormType, setActiveFormType] = useState<"reply" | "update" | null>(null);
 
     return (
         <section className="flex-1">
             {comments.map((comment: TComment) => (
-                <Comment
-                    key={comment._id}
-                    comment={comment}
-                    postId={postId}
-                    activeCommentId={activeCommentId}
-                    setActiveCommentId={setActiveCommentId}
-                    activeFormType={activeFormType}
-                    setActiveFormType={setActiveFormType}
-                />
+                <li key={comment._id}>
+                    <Comment
+                        comment={comment}
+                        postId={postId!}
+                        activeCommentId={activeCommentId}
+                        setActiveCommentId={setActiveCommentId}
+                        activeFormType={activeFormType}
+                        setActiveFormType={setActiveFormType}
+                    />
+                </li>
             ))}
-        </section>
+        </section >
     );
 };
 

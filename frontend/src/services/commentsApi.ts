@@ -17,7 +17,7 @@ export const createCommentApi = async ({ postId, parentId, data }: { postId: str
     return json;
 }
 
-export const getCommentsApi = async (postId: string, page = 1) => {
+export const getCommentsApi = async (postId: string, page: number) => {
     const response = await fetch(`${baseApiUrl}/api/v1/posts/${postId}/comments?page=${page}&limit=${COMMENTS_LIMIT}`, {
         headers: { "Content-Type": "application/json" },
         credentials: 'include'

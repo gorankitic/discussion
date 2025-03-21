@@ -1,5 +1,5 @@
 // utils
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 const Loader = ({ className }: { className?: string }) => {
     return (

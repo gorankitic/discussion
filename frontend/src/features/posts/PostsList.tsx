@@ -1,23 +1,15 @@
-// lib
-import { useEffect } from "react";
-import { useInView } from "react-intersection-observer";
 // types
 import { TPost } from "@/lib/types/types";
 // hooks
 import { usePosts } from "@/features/posts/usePosts";
+import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 // components
 import Post from "@/features/posts/Post";
 import Loader from "@/components/Loader";
 
 const PostsList = () => {
-    const { ref, inView } = useInView();
     const { data, fetchNextPage, isFetchingNextPage, isPending } = usePosts();
-
-    useEffect(() => {
-        if (inView) {
-            fetchNextPage();
-        }
-    }, [inView, fetchNextPage]);
+    const { ref } = useInfiniteScroll(fetchNextPage);
 
     if (isPending) return <Loader className="size-12 mt-40" />
 
