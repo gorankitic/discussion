@@ -31,12 +31,6 @@ commentSchema.index({ post: 1, parent: 1 });
 // Optimizes sorting of comments based on creation time in descending order
 commentSchema.index({ createdAt: -1 });
 
-// Pre-query mongoose hook to populate comment document with user document
-commentSchema.pre(/^find/, function (next) {
-    this.populate({ path: "user", select: "name photoUrl" });
-    next();
-});
-
 const Comment = mongoose.model("Comment", commentSchema);
 
 module.exports = Comment;

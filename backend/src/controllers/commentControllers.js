@@ -5,7 +5,7 @@ const Comment = require("../models/commentModel");
 // lib
 const AppError = require("../lib/AppError");
 const catchAsync = require("../lib/catchAsync");
-const { getNestedCommentsRecursively } = require("../lib/utils");
+const { getNestedCommentsRecursively, getCommentsWithUpvotes } = require("../lib/utils");
 
 // Create a comment document
 // POST method
@@ -19,7 +19,6 @@ exports.createComment = catchAsync(async (req, res) => {
     });
 
     await comment.populate("user", "name photoUrl");
-    // await comment.populate("post", "user");
 
     res.status(201).json({
         status: "success",
@@ -45,18 +44,13 @@ exports.getAllComments = catchAsync(async (req, res, next) => {
     const limit = req.query.limit * 1 || 10;
     const skip = (page - 1) * limit;
 
-    // Find root comments (where parent is null)
-    const comments = await Comment
-        .find({ post: req.params.postId, parent: null })
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit)
+    const comments = await getCommentsWithUpvotes({ postId: req.params.postId, skip, limit });
 
     // Find nested comments for all root comments concurrently
     const commentsTree = await Promise.all(
         comments.map(async (comment) => ({
-            ...comment.toObject(),
-            nestedComments: await getNestedCommentsRecursively(comment._id),
+            ...comment,
+            nestedComments: await getNestedCommentsRecursively(comment._id, req.params.postId),
         }))
     );
 
