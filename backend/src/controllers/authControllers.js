@@ -3,7 +3,7 @@ const crypto = require("crypto");
 // models
 const User = require("../models/userModel");
 // error handling
-const AppError = require("../lib/appError");
+const AppError = require("../lib/AppError");
 const catchAsync = require("../lib/catchAsync");
 // email handling
 const sendEmail = require("../lib/emailService");

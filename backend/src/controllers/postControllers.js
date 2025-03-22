@@ -18,11 +18,14 @@ exports.createPost = catchAsync(async (req, res) => {
     await post.populate("user", "name photoUrl");
 
     res.status(201).json({
-        _id: post._id,
-        title: post.title,
-        content: post.content,
-        user: post.user,
-        createdAt: post.createdAt
+        status: "success",
+        post: {
+            _id: post._id,
+            title: post.title,
+            content: post.content,
+            user: post.user,
+            createdAt: post.createdAt
+        }
     });
 });
 

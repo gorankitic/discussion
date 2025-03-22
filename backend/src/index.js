@@ -5,13 +5,14 @@ const colors = require("colors/safe");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 // lib
-const AppError = require("./lib/appError");
+const AppError = require("./lib/AppError");
 // middlewares
 const globalErrorHandler = require("./middlewares/globalErrorHandler");
 const { limiter } = require("./middlewares/limiters");
 // (routers)
 const userRouter = require("./routes/userRoutes");
 const postRouter = require("./routes/postRoutes");
+const commentRouter = require("./routes/commentRoutes");
 // Configure environment variables
 require("dotenv").config();
 
@@ -30,6 +31,7 @@ app.use(cors({ origin: process.env.APP_ORIGIN, credentials: true }));
 // (Routers)
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/posts", postRouter);
+app.use("/api/v1/comments", commentRouter);
 
 app.all("*", (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
