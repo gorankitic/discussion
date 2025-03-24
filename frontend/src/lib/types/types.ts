@@ -20,9 +20,10 @@ export type TComment = {
     content: string,
     user: TUser,
     post: TPost,
+    parent: TPost | null,
     createdAt: string,
     updatedAt: string,
-    parent: TPost | null,
+    upvoteCount: number,
+    hasUpvoted: boolean
     nestedComments: TComment[] | null,
-    upvoteCount: number
 }

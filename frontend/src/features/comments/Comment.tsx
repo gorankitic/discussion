@@ -10,11 +10,11 @@ import Form from "@/features/comments/Form";
 import UserAvatar from "@/components/UserAvatar";
 import NestedComments from "@/features/comments/NestedComments";
 import CommentActions from "@/features/comments/CommentActions";
+import Upvote from "@/features/upvotes/Upvote";
 // hooks
 import { useCreateComment } from "@/features/comments/useCreateComment";
 import { useUpdateComment } from "@/features/comments/useUpdateComment";
 import { useActiveComment } from "@/context/ActiveCommentContext";
-import Upvote from "../upvotes/Upvote";
 
 interface CommentProps {
     comment: TComment,
@@ -60,7 +60,7 @@ const Comment = ({ comment, postId }: CommentProps) => {
     return (
         <>
             <article key={comment._id} className="flex gap-4 border border-gray-300 rounded-md py-3 px-4 mb-3">
-                <Upvote upvoteCount={comment.upvoteCount} />
+                <Upvote upvoteCount={comment.upvoteCount} hasUpvoted={comment.hasUpvoted} commentId={comment._id} />
                 <div className="flex-1">
                     <header className="flex justify-between">
                         <UserAvatar name={comment.user.name} photoUrl={comment.user.photoUrl} />
