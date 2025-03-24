@@ -1,5 +1,5 @@
 // lib
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { useEffect } from "react";
 import { PenLine, Reply } from "lucide-react";
 import { format } from "date-fns";
 // types
@@ -13,28 +13,25 @@ import CommentActions from "@/features/comments/CommentActions";
 // hooks
 import { useCreateComment } from "@/features/comments/useCreateComment";
 import { useUpdateComment } from "@/features/comments/useUpdateComment";
+import { useActiveComment } from "@/context/ActiveCommentContext";
 
 interface CommentProps {
     comment: TComment,
     postId: string,
-    activeCommentId: string | null,
-    setActiveCommentId: Dispatch<SetStateAction<string | null>>,
-    activeFormType: "reply" | "update" | null,
-    setActiveFormType: Dispatch<SetStateAction<"reply" | "update" | null>>
 }
 
-const Comment = ({ comment, postId, activeCommentId, setActiveCommentId, activeFormType, setActiveFormType }: CommentProps) => {
+const Comment = ({ comment, postId }: CommentProps) => {
+    const { activeComment, setActiveComment } = useActiveComment();
     const { isCreating, createComment } = useCreateComment();
-    const { isUpdatingComment, updateComment } = useUpdateComment(() => setActiveCommentId(null));
+    const { isUpdatingComment, updateComment } = useUpdateComment(() => setActiveComment({ id: null, type: null }));
 
-    const isReplying = activeCommentId === comment._id && activeFormType === "reply";
-    const isUpdating = activeCommentId === comment._id && activeFormType === "update";
+    const isReplying = activeComment.id === comment._id && activeComment.type === "reply";
+    const isUpdating = activeComment.id === comment._id && activeComment.type === "update";
 
     const onSubmitReply = (data: CommentSchema) => {
         createComment({ postId, parentId: comment._id, data }, {
             onSuccess: () => {
-                setActiveCommentId(null);
-                setActiveFormType(null);
+                setActiveComment({ id: null, type: null });
             }
         });
     }
@@ -42,8 +39,7 @@ const Comment = ({ comment, postId, activeCommentId, setActiveCommentId, activeF
     const onSubmitUpdate = (data: CommentSchema) => {
         updateComment({ data, postId, commentId: comment._id }, {
             onSuccess: () => {
-                setActiveCommentId(null);
-                setActiveFormType(null);
+                setActiveComment({ id: null, type: null });
             }
         });
     }
@@ -51,8 +47,7 @@ const Comment = ({ comment, postId, activeCommentId, setActiveCommentId, activeF
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === "Escape") {
-                setActiveCommentId(null);
-                setActiveFormType(null);
+                setActiveComment({ id: null, type: null });
             }
         }
         window.addEventListener("keydown", handleKeyDown);
@@ -94,8 +89,6 @@ const Comment = ({ comment, postId, activeCommentId, setActiveCommentId, activeF
                         <CommentActions
                             comment={comment}
                             postId={postId}
-                            setActiveCommentId={setActiveCommentId}
-                            setActiveFormType={setActiveFormType}
                         />
                     )}
                 </section>

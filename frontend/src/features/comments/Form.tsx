@@ -39,6 +39,7 @@ const Form = ({ onSubmit, isLoading, defaultValue = "", placeholder, label, icon
                     name="content"
                     placeholder={placeholder}
                     autoComplete="off"
+                    autoFocus
                     disabled={isLoading}
                     className="w-full pl-10 pr-4 py-1 rounded-md bg-white placeholder-gray-400 border border-gray-300 focus:outline-blue-600"
                 />

@@ -1,5 +1,3 @@
-// lib
-import { useState } from "react";
 // types
 import { TComment } from "@/lib/types/types";
 // components
@@ -11,8 +9,6 @@ interface CommentsListProps {
 }
 
 const CommentsList = ({ postId, comments }: CommentsListProps) => {
-    const [activeCommentId, setActiveCommentId] = useState<string | null>(null);
-    const [activeFormType, setActiveFormType] = useState<"reply" | "update" | null>(null);
 
     return (
         <section className="flex-1">
@@ -21,10 +17,6 @@ const CommentsList = ({ postId, comments }: CommentsListProps) => {
                     <Comment
                         comment={comment}
                         postId={postId!}
-                        activeCommentId={activeCommentId}
-                        setActiveCommentId={setActiveCommentId}
-                        activeFormType={activeFormType}
-                        setActiveFormType={setActiveFormType}
                     />
                 </li>
             ))}

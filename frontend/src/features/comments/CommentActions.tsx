@@ -1,5 +1,4 @@
 // lib
-import { Dispatch, SetStateAction } from "react";
 import { PenBoxIcon, Reply } from "lucide-react";
 // types
 import { TComment } from "@/lib/types/types";
@@ -8,26 +7,23 @@ import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
 // hooks
 import { useUser } from "@/features/authentication/useUser";
 import { useDeleteComment } from "@/features/comments/useDeleteComment";
+import { useActiveComment } from "@/context/ActiveCommentContext";
 
 interface CommentActionsProps {
     comment: TComment,
     postId: string,
-    setActiveCommentId: Dispatch<SetStateAction<string | null>>,
-    setActiveFormType: Dispatch<SetStateAction<"reply" | "update" | null>>
 }
 
-const CommentActions = ({ comment, postId, setActiveCommentId, setActiveFormType }: CommentActionsProps) => {
+const CommentActions = ({ comment, postId }: CommentActionsProps) => {
     const { user } = useUser();
+    const { setActiveComment } = useActiveComment();
     const { isDeleting, deleteComment } = useDeleteComment();
     return (
         <div className="flex items-center justify-end gap-2">
             <button
                 className="cursor-pointer"
                 aria-label="Reply"
-                onClick={() => {
-                    setActiveCommentId(comment._id);
-                    setActiveFormType("reply");
-                }}
+                onClick={() => setActiveComment({ id: comment._id, type: "reply" })}
             >
                 <Reply className="size-4" />
             </button>
@@ -36,10 +32,7 @@ const CommentActions = ({ comment, postId, setActiveCommentId, setActiveFormType
                     <button
                         className="cursor-pointer"
                         aria-label="Update"
-                        onClick={() => {
-                            setActiveCommentId(comment._id);
-                            setActiveFormType("update");
-                        }}
+                        onClick={() => setActiveComment({ id: comment._id, type: "update" })}
                     >
                         <PenBoxIcon className="size-4" />
                     </button>

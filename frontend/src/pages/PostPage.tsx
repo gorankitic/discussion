@@ -12,6 +12,8 @@ import Loader from "@/components/Loader";
 import Post from "@/features/posts/Post";
 import Form from "@/features/comments/Form";
 import CommentsList from "@/features/comments/CommentsList";
+// context
+import { ActiveCommentProvider } from "@/context/ActiveCommentContext";
 
 const PostPage = () => {
     const { postId } = useParams();
@@ -41,12 +43,14 @@ const PostPage = () => {
                     <Form
                         onSubmit={onSubmitComment}
                         isLoading={isCreating}
-                        label="Comment"
+                        label="Send"
                         placeholder="Write a comment..."
                     />
                     {dataComments && dataComments.pages.map(currentPage => (
                         <ul key={currentPage.page}>
-                            <CommentsList postId={postId!} comments={currentPage.comments} />
+                            <ActiveCommentProvider>
+                                <CommentsList postId={postId!} comments={currentPage.comments} />
+                            </ActiveCommentProvider>
                         </ul>
                     ))}
                     <div ref={ref}>
