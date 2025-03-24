@@ -9,18 +9,14 @@ const getCommentsWithUpvotes = async ({ postId, skip, limit, parentCommentId = n
     const aggregationPipeline = [
         // Stage match filters the comments to only include those associated with a specific postId
         { $match: { post: new mongoose.Types.ObjectId(String(postId)), ...matchCondition } },
+        { $sort: { createdAt: 1 } },
     ];
-
-    if (parentCommentId) {
-        aggregationPipeline.push({ $sort: { createdAt: 1 } });
-    }
 
     // Only add pagination (skip and limit) for root comments (parent is null)
     if (!parentCommentId) {
         aggregationPipeline.push(
             { $skip: skip },
             { $limit: limit },
-            { $sort: { createdAt: -1 } },
         );
     }
 
