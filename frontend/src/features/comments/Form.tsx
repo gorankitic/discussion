@@ -31,34 +31,36 @@ const Form = ({ onSubmit, isLoading, defaultValue = "", placeholder, label, icon
     }
 
     return (
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="flex gap-3 items-center">
-            <div className="relative w-full">
-                <input
-                    {...register("content")}
-                    type="text"
-                    name="content"
-                    placeholder={placeholder}
-                    autoComplete="off"
-                    autoFocus
+        <>
+            <form onSubmit={handleSubmit(handleFormSubmit)} className="flex gap-3 items-center">
+                <div className="relative w-full">
+                    <input
+                        {...register("content")}
+                        type="text"
+                        name="content"
+                        placeholder={placeholder}
+                        autoComplete="off"
+                        autoFocus
+                        disabled={isLoading}
+                        className="w-full pl-10 pr-4 py-1 rounded-md bg-white placeholder-gray-400 border border-gray-300 focus:outline-blue-600"
+                    />
+                    <PencilLine className="size-4 absolute left-3 top-[9px] text-gray-500 pointer-events-none" />
+                </div>
+                <button
                     disabled={isLoading}
-                    className="w-full pl-10 pr-4 py-1 rounded-md bg-white placeholder-gray-400 border border-gray-300 focus:outline-blue-600"
-                />
-                <PencilLine className="size-4 absolute left-3 top-[9px] text-gray-500 pointer-events-none" />
-            </div>
-            <button
-                disabled={isLoading}
-                className="flex gap-1 items-center justify-center w-36 py-1 px-4 bg-gradient-to-r from-blue-400 to-blue-600 text-white rounded-md shadow-md focus:outline-none cursor-pointer"
-            >
-                {isLoading ? <Loader className="size-4 border-blue-50 border-b-2" /> : (
-                    <>
-                        {iconPosition === "left" && <Icon className="size-4 text-blue-50" />}
-                        <span>{label}</span>
-                        {iconPosition === "right" && <Icon className="size-4 text-blue-50" />}
-                    </>
-                )}
-            </button>
+                    className="flex gap-1 items-center justify-center w-36 py-1 px-4 bg-gradient-to-r from-blue-400 to-blue-600 text-white rounded-md shadow-md focus:outline-none cursor-pointer"
+                >
+                    {isLoading ? <Loader className="size-4 border-blue-50 border-b-2" /> : (
+                        <>
+                            {iconPosition === "left" && <Icon className="size-4 text-blue-50" />}
+                            <span>{label}</span>
+                            {iconPosition === "right" && <Icon className="size-4 text-blue-50" />}
+                        </>
+                    )}
+                </button>
+            </form>
             {errors.content && <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>}
-        </form>
+        </>
     )
 }
 

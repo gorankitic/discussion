@@ -6,7 +6,7 @@
 @plugin "tailwindcss-animate";
 
 body {
-	@apply text-gray-800 font-['Roboto'];
+	@apply text-gray-700 font-['Roboto'];
 }
 
 /* Base class for element that has collapse line functionallity */
@@ -31,7 +31,7 @@ body {
 /* :focus-visible: This applies the styles when the element is focused and is visible */
 .collapse-line:hover::before,
 .collapse-line:focus-visible::before {
-	@apply bg-blue-700;
+	@apply bg-blue-600;
 }
 
 :root {

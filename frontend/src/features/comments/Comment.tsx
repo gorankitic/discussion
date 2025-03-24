@@ -14,6 +14,7 @@ import CommentActions from "@/features/comments/CommentActions";
 import { useCreateComment } from "@/features/comments/useCreateComment";
 import { useUpdateComment } from "@/features/comments/useUpdateComment";
 import { useActiveComment } from "@/context/ActiveCommentContext";
+import Upvote from "../upvotes/Upvote";
 
 interface CommentProps {
     comment: TComment,
@@ -58,41 +59,44 @@ const Comment = ({ comment, postId }: CommentProps) => {
 
     return (
         <>
-            <article key={comment._id} className="border border-gray-300 rounded-md p-3 mb-3">
-                <header className="flex justify-between">
-                    <UserAvatar name={comment.user.name} photoUrl={comment.user.photoUrl} />
-                    <p className="text-sm">{format(new Date(comment.updatedAt), "d.M.y. H:mm")}</p>
-                </header>
-                <p className="mt-1">{comment.content}</p>
-                <section className="mt-1">
-                    {isReplying && (
-                        <Form
-                            onSubmit={onSubmitReply}
-                            isLoading={isCreating}
-                            label="Reply"
-                            placeholder="Write a reply..."
-                            icon={Reply}
-                            iconPosition="left"
-                        />
-                    )}
-                    {isUpdating && (
-                        <Form
-                            onSubmit={onSubmitUpdate}
-                            isLoading={isUpdatingComment}
-                            defaultValue={comment.content}
-                            label="Update"
-                            icon={PenLine}
-                            iconPosition="left"
-                        />
-                    )}
-                    {!(isReplying || isUpdating) && (
-                        <CommentActions
-                            comment={comment}
-                            postId={postId}
-                        />
-                    )}
-                </section>
-                {(isReplying || isUpdating) && <span className="text-xs flex justify-end mt-1 mr-3">Press ESC to cancel</span>}
+            <article key={comment._id} className="flex gap-4 border border-gray-300 rounded-md py-3 px-4 mb-3">
+                <Upvote upvoteCount={comment.upvoteCount} />
+                <div className="flex-1">
+                    <header className="flex justify-between">
+                        <UserAvatar name={comment.user.name} photoUrl={comment.user.photoUrl} />
+                        <p className="text-sm">{format(new Date(comment.updatedAt), "d.M.y. H:mm")}</p>
+                    </header>
+                    <p className="mt-1">{comment.content}</p>
+                    <section className="mt-1">
+                        {isReplying && (
+                            <Form
+                                onSubmit={onSubmitReply}
+                                isLoading={isCreating}
+                                label="Reply"
+                                placeholder="Write a reply..."
+                                icon={Reply}
+                                iconPosition="left"
+                            />
+                        )}
+                        {isUpdating && (
+                            <Form
+                                onSubmit={onSubmitUpdate}
+                                isLoading={isUpdatingComment}
+                                defaultValue={comment.content}
+                                label="Update"
+                                icon={PenLine}
+                                iconPosition="left"
+                            />
+                        )}
+                        {!(isReplying || isUpdating) && (
+                            <CommentActions
+                                comment={comment}
+                                postId={postId}
+                            />
+                        )}
+                    </section>
+                    {(isReplying || isUpdating) && <span className="text-xs flex justify-end mt-1 mr-3">Press ESC to cancel</span>}
+                </div>
             </article>
             {comment.nestedComments && comment.nestedComments?.length > 0 && (
                 <NestedComments nestedComments={comment.nestedComments} postId={postId} />
