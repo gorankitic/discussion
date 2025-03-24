@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 // models
 const Comment = require("../models/commentModel");
 
-const getCommentsWithUpvotes = async ({ postId, skip, limit, parentCommentId = null }) => {
+const getCommentsWithUpvotes = async ({ postId, userId, skip, limit, parentCommentId = null }) => {
     const matchCondition = parentCommentId ? { parent: parentCommentId } : { parent: null };
 
     const aggregationPipeline = [
@@ -39,12 +39,38 @@ const getCommentsWithUpvotes = async ({ postId, skip, limit, parentCommentId = n
             $addFields: { upvoteCount: { $size: { $ifNull: ['$upvotes', []] } } }
         },
         {
+            // Check if the (signedIn) user has upvoted this comment
+            $addFields: {
+                hasUpvoted: {
+                    $cond: {
+                        if: {
+                            $gt: [{
+                                // if filtered upvotes array contains one matching object → $size returns 1 else 0
+                                // If the user has upvoted, the count will be 1
+                                $size: {
+                                    $filter: {
+                                        input: '$upvotes',
+                                        as: 'upvote',
+                                        cond: {
+                                            $eq: ['$$upvote.user', userId]
+                                        }
+                                    }
+                                }
+                            }, 0]
+                        },
+                        then: true,
+                        else: false
+                    }
+                }
+            }
+        },
+        {
             // Project stage the necessary fields
             // 0 exclude the upvotes array
             $project: { upvotes: 0 },
         },
         {
-            // Populate the comment document with user data (name, photoUrl)
+            // Populate the comment document with user (name, photoUrl)
             $lookup: {
                 from: 'users',
                 localField: 'user',
@@ -66,9 +92,9 @@ const getCommentsWithUpvotes = async ({ postId, skip, limit, parentCommentId = n
     return comments;
 }
 
-const getNestedCommentsRecursively = async (parentCommentId, postId) => {
+const getNestedCommentsRecursively = async ({ parentCommentId, postId, userId }) => {
     // Fetch all nested comments for the given parentId
-    const nestedComments = await getCommentsWithUpvotes({ postId, parentCommentId });
+    const nestedComments = await getCommentsWithUpvotes({ postId, parentCommentId, userId });
 
     if (!nestedComments.length) return [];
 
@@ -76,7 +102,7 @@ const getNestedCommentsRecursively = async (parentCommentId, postId) => {
     return await Promise.all(
         nestedComments.map(async (nestedComment) => ({
             ...nestedComment,
-            nestedComments: await getNestedCommentsRecursively(nestedComment._id, postId),
+            nestedComments: await getNestedCommentsRecursively({ parentCommentId: nestedComment._id, postId, userId }),
         }))
     );
 };

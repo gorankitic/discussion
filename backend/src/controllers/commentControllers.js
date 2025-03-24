@@ -44,13 +44,13 @@ exports.getAllComments = catchAsync(async (req, res, next) => {
     const limit = req.query.limit * 1 || 10;
     const skip = (page - 1) * limit;
 
-    const comments = await getCommentsWithUpvotes({ postId: req.params.postId, skip, limit });
+    const comments = await getCommentsWithUpvotes({ postId: req.params.postId, userId: req.user._id, skip, limit });
 
     // Find nested comments for all root comments concurrently
     const commentsTree = await Promise.all(
         comments.map(async (comment) => ({
             ...comment,
-            nestedComments: await getNestedCommentsRecursively(comment._id, req.params.postId),
+            nestedComments: await getNestedCommentsRecursively({ parentCommentId: comment._id, postId: req.params.postId, userId: req.user._id }),
         }))
     );
 
