@@ -4,7 +4,7 @@ import { toast } from "sonner";
 // api service
 import { updateCommentApi } from "@/services/commentsApi";
 
-export function useUpdateComment(setShowUpdateForm: (value: boolean) => void) {
+export function useUpdateComment() {
     const queryClient = useQueryClient();
 
     const { isPending: isUpdatingComment, mutate: updateComment } = useMutation({
@@ -12,7 +12,6 @@ export function useUpdateComment(setShowUpdateForm: (value: boolean) => void) {
         onSuccess: () => {
             toast.success("Comment updated successfully.");
             queryClient.invalidateQueries({ queryKey: ["comments"] });
-            setShowUpdateForm(false);
         },
         onError: (error) => {
             toast.error(error.message);

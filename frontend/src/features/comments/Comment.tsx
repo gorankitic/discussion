@@ -23,7 +23,7 @@ interface CommentProps {
 const Comment = ({ comment, postId }: CommentProps) => {
     const { activeComment, setActiveComment } = useActiveComment();
     const { isCreating, createComment } = useCreateComment();
-    const { isUpdatingComment, updateComment } = useUpdateComment(() => setActiveComment({ id: null, type: null }));
+    const { isUpdatingComment, updateComment } = useUpdateComment();
 
     const isReplying = activeComment.id === comment._id && activeComment.type === "reply";
     const isUpdating = activeComment.id === comment._id && activeComment.type === "update";

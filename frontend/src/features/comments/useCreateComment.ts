@@ -4,7 +4,7 @@ import { toast } from "sonner";
 // api service
 import { createCommentApi } from "@/services/commentsApi";
 
-export function useCreateComment(setShowReplyForm?: (value: boolean) => void) {
+export function useCreateComment() {
     const queryClient = useQueryClient();
 
     const { isPending: isCreating, mutate: createComment } = useMutation({
@@ -12,9 +12,7 @@ export function useCreateComment(setShowReplyForm?: (value: boolean) => void) {
         onSuccess: () => {
             toast.success("Comment created successfully.");
             queryClient.invalidateQueries({ queryKey: ["comments"] });
-            if (setShowReplyForm) {
-                setShowReplyForm(false);
-            }
+
         },
         onError: (error) => {
             toast.error(error.message);
