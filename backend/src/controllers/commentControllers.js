@@ -2,10 +2,14 @@
 const mongoose = require("mongoose");
 // models
 const Comment = require("../models/commentModel");
+const Notification = require("../models/notificationsModel");
 // lib
 const AppError = require("../lib/AppError");
 const catchAsync = require("../lib/catchAsync");
-const { getNestedCommentsRecursively, getCommentsWithUpvotes } = require("../lib/utils");
+// utils
+const { getCommentsWithUpvotes } = require("../lib/utils/getCommentsWithUpvotes");
+const { getNestedCommentsRecursively } = require("../lib/utils/getNestedCommentsRecursively");
+const { createNotification } = require("../lib/utils/createNotification");
 
 // Create a comment document
 // POST method
@@ -18,7 +22,13 @@ exports.createComment = catchAsync(async (req, res) => {
         parent: req.body.parentId
     });
 
-    await comment.populate("user", "name photoUrl");
+    await comment.populate([
+        { path: "user", select: "name photoUrl" },
+        { path: "post", select: "user" },
+        { path: "parent", select: "user" }
+    ]);
+
+    await createNotification(comment);
 
     res.status(201).json({
         status: "success",
@@ -37,11 +47,10 @@ exports.createComment = catchAsync(async (req, res) => {
 // Find all post comments
 // GET method
 // Protected route /api/v1/posts/:postId/comments
-exports.getAllComments = catchAsync(async (req, res, next) => {
-    // Pagination
-    // ?page=1&limit=10 -> page 1: 1-10, page 2: 11-20...
-    const page = req.query.page * 1 || 1;
-    const limit = req.query.limit * 1 || 10;
+exports.getAllComments = catchAsync(async (req, res) => {
+    // Pagination: ?page=1&limit=10 -> page 1: 1-10, page 2: 11-20...
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
     const comments = await getCommentsWithUpvotes({ postId: req.params.postId, userId: req.user._id, skip, limit });
@@ -60,10 +69,10 @@ exports.getAllComments = catchAsync(async (req, res, next) => {
     res.status(200).json({
         status: 'success',
         page,
-        totalComments,
         totalPages: Math.ceil(totalComments / limit),
+        pageResults: comments.length,
         hasMorePages,
-        results: comments.length,
+        totalComments,
         comments: commentsTree,
     });
 });
@@ -97,11 +106,12 @@ exports.updateComment = catchAsync(async (req, res, next) => {
 // Protected route /api/v1/posts/:postId/comments/:commentId
 exports.deleteComment = catchAsync(async (req, res, next) => {
     const comment = await Comment.findById(req.params.commentId);
+
     if (!comment) {
         return next(new AppError("There is no comment with that ID.", 404));
     }
 
-    if (req.user._id.toString() !== comment.user._id.toString()) {
+    if (!req.user._id.equals(comment.user)) {
         return next(new AppError("You are not authorized to delete this comment.", 403));
     }
 
@@ -119,14 +129,17 @@ exports.deleteComment = catchAsync(async (req, res, next) => {
             // Delete all nested comments concurrently
             await Promise.all(nestedComments.flatMap((nestedComment) => [
                 deleteNestedComments(nestedComment._id),
-                Comment.deleteOne({ _id: nestedComment._id }).session(session)
+                Comment.deleteOne({ _id: nestedComment._id }).session(session),
+                // Delete notification linked with this nested comment
+                Notification.findOneAndDelete({ comment: nestedComment._id }).session(session)
             ]));
         }
 
-        // Delete nested comments and root comment concurrently
+        // Delete nested comments, root comment, and root comment notification concurrently
         await Promise.all([
-            deleteNestedComments(comment._id),
-            Comment.findByIdAndDelete(comment._id).session(session)
+            deleteNestedComments(req.params.commentId),
+            Comment.findByIdAndDelete(req.params.commentId).session(session),
+            Notification.findOneAndDelete({ comment: req.params.commentId }).session(session)
         ]);
 
         // (On succeed) Commit the transaction (making all the changes permanent)

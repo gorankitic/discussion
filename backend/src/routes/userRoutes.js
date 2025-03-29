@@ -5,8 +5,11 @@ const { signup, verifyEmail, signin, signout, forgotPassword, resetPassword, upd
 const { updateMe, deleteMe, getUser } = require("../controllers/userControllers");
 // middlewares
 const { protect } = require("../middlewares/authMiddlewares");
+// routes
+const notificationRouter = require("../routes/notificationRoutes");
 
 const router = express.Router();
+router.use("/notifications", notificationRouter);
 
 // Public routes
 router.post("/signup", signup);
