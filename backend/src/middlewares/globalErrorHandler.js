@@ -1,4 +1,4 @@
-const AppError = require("../lib/appError");
+const AppError = require("../lib/AppError");
 
 // 🔥 HANDLING MONGOOSE ERRORS
 // Handling invalid database IDs

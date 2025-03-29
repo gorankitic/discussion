@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 // models
 const User = require("../models/userModel");
 // error handling
-const AppError = require("../lib/appError");
+const AppError = require("../lib/AppError");
 const catchAsync = require("../lib/catchAsync");
 
 // Authentication middleware to protect routes from unauthenticated access

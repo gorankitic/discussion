@@ -1,7 +1,7 @@
 // modules
 const rateLimiter = require("express-rate-limit");
 // error handling
-const AppError = require("../lib/appError");
+const AppError = require("../lib/AppError");
 
 exports.loginLimiter = rateLimiter({
     windowMs: 30 * 60 * 1000, // 30 minutes
