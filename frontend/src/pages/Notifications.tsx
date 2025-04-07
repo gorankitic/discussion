@@ -27,7 +27,7 @@ const Notifications = () => {
 
     return (
         <main className="flex-1">
-            <h1 className="font-medium text-xl my-6">Your notifications:</h1>
+            <h1 className="font-medium text-xl my-4">Your notifications:</h1>
             {data && data.pages[0].totalNotifications === 0 && <p className="text-sm text-center">You have no notifications.</p >}
             {data && data.pages.map(currentPage => (
                 <ul key={currentPage.page}>

@@ -6,6 +6,7 @@ import { CornerDownRight } from "lucide-react";
 import { TNotification } from "@/lib/types/types";
 // components
 import UserAvatar from "@/components/UserAvatar";
+import TextExpander from "@/components/TextExpander";
 import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
 // hooks
 import { useDeleteNotification } from "@/features/notifications/useDeleteNotification";
@@ -24,7 +25,7 @@ const Notification = ({ notification }: NotificationProps) => {
                 {notification.type === "comment" && <p> commented on your post.</p>}
                 {notification.type === "reply" && <p> replied to your comment.</p>}
                 <div className="flex gap-5 ml-auto items-center">
-                    <p>{formatDistance(new Date(notification.createdAt), new Date(), { addSuffix: true })}</p>
+                    <p className="text-sm">{formatDistance(new Date(notification.createdAt), new Date(), { addSuffix: true })}</p>
                     <ConfirmDeleteModal
                         title="Are you sure you want to delete this notification?"
                         description="This action cannot be undone."
@@ -34,12 +35,9 @@ const Notification = ({ notification }: NotificationProps) => {
                 </div>
             </header>
             <Link to={`/posts/${notification.post}`}>
-                <main className="flex items-center gap-2 pl-2">
-                    <CornerDownRight className="size-4" />
-                    <p>{notification.comment.content.length > 200
-                        ? `${notification.comment.content.slice(0, 200)}...`
-                        : notification.comment.content}
-                    </p>
+                <main className="flex gap-2 pl-2">
+                    <CornerDownRight className="size-5" />
+                    <TextExpander>{notification.comment.content}</TextExpander>
                 </main>
             </Link>
         </article>

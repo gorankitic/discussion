@@ -15,6 +15,7 @@ import Upvote from "@/features/upvotes/Upvote";
 import { useCreateComment } from "@/features/comments/useCreateComment";
 import { useUpdateComment } from "@/features/comments/useUpdateComment";
 import { useActiveComment } from "@/context/ActiveCommentContext";
+import TextExpander from "@/components/TextExpander";
 
 interface CommentProps {
     comment: TComment,
@@ -66,7 +67,9 @@ const Comment = ({ comment, postId }: CommentProps) => {
                         <UserAvatar name={comment.user.name} photoUrl={comment.user.photoUrl} />
                         <p className="text-sm">{format(new Date(comment.updatedAt), "d.M.y. H:mm")}</p>
                     </header>
-                    <p className="mt-1">{comment.content}</p>
+                    <div className="mt-1">
+                        <TextExpander charCount={200}>{comment.content}</TextExpander>
+                    </div>
                     <section className="mt-1">
                         {isReplying && (
                             <Form
