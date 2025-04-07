@@ -25,6 +25,8 @@ Discussion is a full-stack student project developed while learning Node.js, Exp
 <img src="screenshots/screenshot-1.png" />
 <img src="screenshots/screenshot-3.png" />
 <img src="screenshots/screenshot-2.png" />
+<img src="screenshots/screenshot-4.png" />
+<img src="screenshots/screenshot-5.png" />
 
 # 🚀 How to use the project
 
