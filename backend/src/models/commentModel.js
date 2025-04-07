@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const commentSchema = mongoose.Schema({
     content: {
         type: String,
-        maxLength: 500,
+        maxLength: 1000,
         required: [true, "Comment can't be empty."]
     },
     user: {
