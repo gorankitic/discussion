@@ -22,8 +22,8 @@ const UserButton = () => {
         <DropdownMenu modal={false}>
             <DropdownMenuTrigger>
                 <div className="relative cursor-pointer">
-                    <Avatar className="size-8 object-cover" aria-label={`Avatar of ${user.name}`}>
-                        {user.photoUrl && <img src={user.photoUrl} />}
+                    <Avatar className="size-8" aria-label={`Avatar of ${user.name}`}>
+                        {user.photoUrl && <img src={user.photoUrl} className="object-cover w-full h-full" />}
                         {!user.photoUrl && (
                             <AvatarFallback>
                                 {user.name?.charAt(0).toUpperCase()}

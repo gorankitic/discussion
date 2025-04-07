@@ -1,3 +1,4 @@
+// components
 import VerifyEmailForm from "@/features/authentication/VerifyEmailForm"
 
 const VerifyEmail = () => {
@@ -7,4 +8,4 @@ const VerifyEmail = () => {
         </main>
     )
 }
-export default VerifyEmail
+export default VerifyEmail;

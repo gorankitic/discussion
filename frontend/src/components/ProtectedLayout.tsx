@@ -12,8 +12,18 @@ const ProtectedLayout = () => {
     const navigate = useNavigate();
     const { user, isPending } = useUser();
 
+    // useEffect(() => {
+    //     if (!user && !isPending) navigate("/signin");
+    // }, [user, isPending, navigate]);
     useEffect(() => {
-        if (!user && !isPending) navigate("/signin");
+        if (!isPending) {
+            if (!user) {
+                navigate("/signin");
+            }
+            if (!user.isVerified) {
+                navigate("/verify-email", { replace: true });
+            }
+        }
     }, [user, isPending, navigate]);
 
     if (isPending) {

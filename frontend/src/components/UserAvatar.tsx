@@ -13,9 +13,9 @@ interface UserAvatarProps {
 const UserAvatar = ({ name, photoUrl, size = "size-6", className }: UserAvatarProps) => {
     return (
         <div className="flex items-center gap-2">
-            <Avatar className={cn("relative object-cover", size, className)} aria-label={`Avatar of ${name}`}>
+            <Avatar className={cn("relative", size, className)} aria-label={`Avatar of ${name}`}>
                 {photoUrl && (
-                    <img src={photoUrl} />
+                    <img src={photoUrl} className="object-cover w-full h-full" />
                 )}
                 {!photoUrl && (
                     <AvatarFallback>

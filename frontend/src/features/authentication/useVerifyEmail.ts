@@ -1,20 +1,27 @@
 // lib
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+// types
+import { TUser } from "@/lib/types/types";
 // api service
 import { newVerifyEmailApi, verifyEmailApi } from "@/services/authApi";
 
 export const useEmailVerification = () => {
     const navigate = useNavigate();
     const [message, setMessage] = useState("");
+    const queryClient = useQueryClient();
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
     const { mutate: verifyEmail, isPending } = useMutation({
         mutationFn: verifyEmailApi,
         onSuccess: (response) => {
             toast.success(response.message);
+            queryClient.setQueryData(["user"], (prev: TUser) => ({
+                ...prev,
+                isVerified: true,
+            }));
             navigate("/", { replace: true });
         },
         onError: (error) => {

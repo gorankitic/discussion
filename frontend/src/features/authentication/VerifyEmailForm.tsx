@@ -1,11 +1,10 @@
 // lib
 import { motion } from "framer-motion";
+import { Send } from "lucide-react";
 // components
 import AuthCard from "@/features/authentication/AuthCard";
 //hooks
 import { useEmailVerification } from "@/features/authentication/useVerifyEmail";
-// icons
-import { Send } from "lucide-react";
 
 const VerifyEmailForm = () => {
     const {
