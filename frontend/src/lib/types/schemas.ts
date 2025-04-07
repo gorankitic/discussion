@@ -37,12 +37,12 @@ export const updatePasswordSchema = z.object({
 export type UpdatePasswordSchema = z.infer<typeof updatePasswordSchema>;
 
 export const postSchema = z.object({
-    title: z.string().min(1, { message: "Title is required" }).max(50, { message: "Allowed 50 characters maximum" }),
-    content: z.string().min(1, { message: "Description is required" }).max(200, { message: "Allowed 200 characters maximum" })
+    title: z.string().min(1, { message: "Title is required" }).max(100, { message: "Allowed 100 characters maximum" }),
+    content: z.string().min(1, { message: "Description is required" }).max(500, { message: "Allowed 500 characters maximum" })
 });
 export type PostSchema = z.infer<typeof postSchema>;
 
 export const commentSchema = z.object({
-    content: z.string().min(1, { message: "Comment content is required" }).max(300, { message: "Allowed 300 characters maximum" })
+    content: z.string().min(1, { message: "Comment content is required" }).max(1000, { message: "Allowed 1000 characters maximum" })
 });
 export type CommentSchema = z.infer<typeof commentSchema>;

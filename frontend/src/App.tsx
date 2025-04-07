@@ -12,6 +12,7 @@ import ForgotPassword from "@/pages/ForgotPassword";
 import ResetPassword from "@/pages/ResetPassword";
 import Settings from "@/pages/Settings";
 import PostPage from "@/pages/PostPage";
+import Notifications from "@/pages/Notifications";
 
 function App() {
     return (
@@ -21,6 +22,7 @@ function App() {
                 <Route path="verify-email" element={<VerifyEmail />} />
                 <Route path="settings" element={<Settings />} />
                 <Route path="posts/:postId" element={<PostPage />} />
+                <Route path="notifications" element={<Notifications />} />
             </Route>
             <Route element={<PublicLayout />}>
                 <Route path="signup" element={<SignUp />} />

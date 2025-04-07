@@ -27,3 +27,19 @@ export type TComment = {
     hasUpvoted: boolean
     nestedComments: TComment[] | null,
 }
+
+export type TNotification = {
+    _id: string,
+    createdAt: string,
+    isRead: boolean,
+    post: string,
+    recipient: string,
+    type: "comment" | "reply",
+    comment: {
+        content: string
+    },
+    sender: {
+        name: string,
+        photoUrl: string
+    }
+}
